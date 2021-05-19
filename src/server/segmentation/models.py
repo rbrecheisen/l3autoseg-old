@@ -1,3 +1,13 @@
 from django.db import models
 
-# Create your models here.
+
+class TensorFlowModel(models.Model):
+    pass
+
+
+class DataSetModel(models.Model):
+    pass
+
+
+class ImageModel(models.Model):
+    pass

@@ -1,1 +1,4 @@
 TODO
+
+- Implement models
+- Combine HTML pages and REST endpoints
