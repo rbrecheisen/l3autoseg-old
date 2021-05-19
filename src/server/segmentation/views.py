@@ -9,39 +9,39 @@ def index(request):
 
 @login_required(login_url='/segmentation/accounts/login/')
 def datasets(request):
-    pass
+    return render(request, 'datasets.html')
 
 
 @login_required(login_url='/segmentation/accounts/login/')
 def dataset(request, dataset_id):
-    pass
+    return render(request, 'dataset.html')
 
 
 @login_required(login_url='/segmentation/accounts/login/')
 def jobs(request):
-    pass
+    return render(request, 'jobs.html')
 
 
 @login_required(login_url='/segmentation/accounts/login/')
 def job(request, job_id):
-    pass
+    return render(request, 'job.html')
 
 
 @login_required(login_url='/segmentation/accounts/login/')
 def results(request):
-    pass
+    return render(request, 'results.html')
 
 
 @login_required(login_url='/segmentation/accounts/login/')
 def result(request, result_id):
-    pass
+    return render(request, 'result.html')
 
 
 @login_required(login_url='/segmentation/accounts/login/')
 def models(request):
-    pass
+    return render(request, 'models.html')
 
 
 @login_required(login_url='/segmentation/accounts/login/')
 def model(request, model_id):
-    pass
+    return render(request, 'model.html')
