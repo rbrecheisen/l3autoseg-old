@@ -1,4 +1,5 @@
 TODO
 
-- Implement models
+- Implement models (use FilePathField for TensorFlowModel)
+  # https://docs.djangoproject.com/en/2.2/ref/models/fields/#filepathfield
 - Combine HTML pages and REST endpoints

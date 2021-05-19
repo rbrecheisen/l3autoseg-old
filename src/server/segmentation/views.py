@@ -8,16 +8,6 @@ def index(request):
 
 
 @login_required(login_url='/segmentation/accounts/login/')
-def models(request):
-    pass
-
-
-@login_required(login_url='/segmentation/accounts/login/')
-def model(request, model_id):
-    pass
-
-
-@login_required(login_url='/segmentation/accounts/login/')
 def datasets(request):
     pass
 
@@ -44,4 +34,14 @@ def results(request):
 
 @login_required(login_url='/segmentation/accounts/login/')
 def result(request, result_id):
+    pass
+
+
+@login_required(login_url='/segmentation/accounts/login/')
+def models(request):
+    pass
+
+
+@login_required(login_url='/segmentation/accounts/login/')
+def model(request, model_id):
     pass
