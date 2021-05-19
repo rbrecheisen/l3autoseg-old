@@ -6,6 +6,23 @@
             <div class="card" style="margin-top: 10px;">
                 <div class="card-header">Datasets</div>
                 <div class="card-body">
+                    <form action="/segmentation/datasets/" method="post" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        <label for="files">Select files:</label>
+                        <input type="file" id="files" name="files" multiple/><br><br>
+                        <button type="submit" class="btn btn-primary">Upload</button>
+                    </form>
+                    {% if datasets %}
+                    <b>Datasets</b>
+                    <ul class="list-group">
+                        {% for dataset in datasets %}
+                        <li class="list-group-item">
+                            <a href="/segmentation/datasets/{{ dataset.id }}">{{ dataset.name }}</a>
+                        </li>
+                        {% endfor %}
+                    </ul>
+                    {% endif %}
+                    <p style="margin-top: 10px"><a href="/segmentation/">back</a></p>
                 </div>
             </div>
         </div>

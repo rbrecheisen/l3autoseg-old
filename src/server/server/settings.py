@@ -85,3 +85,8 @@ USE_TZ = True
 STATIC_URL = '/static/'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+MEDIA_ROOT = '/tmp/l3autoseg'
+os.makedirs(MEDIA_ROOT, exist_ok=True)
+
+MEDIA_URL = '/segmentation/files/'

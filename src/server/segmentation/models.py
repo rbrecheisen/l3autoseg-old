@@ -1,5 +1,11 @@
+import os
 from django.db import models
 from django.contrib.auth.models import User
+from django.dispatch import receiver
+
+
+class TensorFlowModel(models.Model):
+    pass
 
 
 class DataSetModel(models.Model):
@@ -14,6 +20,12 @@ class ImageModel(models.Model):
         User, editable=False, related_name='+', on_delete=models.CASCADE)
 
 
-class TensorFlowModel(models.Model):
-    # https://docs.djangoproject.com/en/2.2/ref/models/fields/#filepathfield
+@receiver(models.signals.post_delete, sender=ImageModel)
+def image_post_delete(sender, instance, **kwargs):
+    if instance.file_obj:
+        if os.path.isfile(instance.file_obj.path):
+            os.remove(instance.file_obj.path)
+
+
+class ResultModel(models.Model):
     pass
