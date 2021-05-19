@@ -3,3 +3,5 @@ TODO
 - Implement models (use FilePathField for TensorFlowModel)
   # https://docs.djangoproject.com/en/2.2/ref/models/fields/#filepathfield
 - Combine HTML pages and REST endpoints
+
+X Dataset job status and progress (n/m files done)

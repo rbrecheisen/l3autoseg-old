@@ -10,11 +10,17 @@ class TensorFlowModel(models.Model):
 
 class DataSetModel(models.Model):
     name = models.CharField(max_length=1024, editable=True, null=False)
+    created_at = models.DateTimeField(auto_now_add=True)
+    status = models.CharField(max_length=16, null=False, default='idle')
+    progress = models.CharField(max_length=16, null=False, default='0/0')
+    owner = models.ForeignKey(
+        User, editable=False, related_name='+', on_delete=models.CASCADE)
 
 
 class ImageModel(models.Model):
     file_obj = models.FileField(upload_to='')
     uploaded_at = models.DateTimeField(auto_now_add=True)
+    done = models.BooleanField(null=False, default=False)
     dataset = models.ForeignKey(DataSetModel, on_delete=models.CASCADE)
     owner = models.ForeignKey(
         User, editable=False, related_name='+', on_delete=models.CASCADE)
