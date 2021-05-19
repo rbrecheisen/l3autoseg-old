@@ -1,0 +1,4 @@
+TODO
+
+- Write db.sqlite3 to central location, visible for multiple apps
+- Allow only single user at the time (check this at login)
