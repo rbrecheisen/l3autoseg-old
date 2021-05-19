@@ -1,3 +1,18 @@
-<html>
-<h1>Scoring</h1>
-</html>
+{% extends "base.html" %}
+{% block content %}
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-sm-10">
+            <div class="card" style="margin-top: 10px;">
+                <div class="card-header">Introduction</div>
+                <div class="card-body">
+                    <p class="card-text">
+                        This app allows you to calculate various clinical scores based on L3 images
+                        and there corresponding segmentations.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
