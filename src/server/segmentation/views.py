@@ -31,9 +31,9 @@ def datasets(request):
     if request.method == 'POST':
         files = request.FILES.getlist('files')
         timestamp = timezone.now().strftime('%Y%m%d%H%M%S')
-        ds = DataSetModel.objects.create(name='dataset-{}'.format(timestamp))
+        ds = DataSetModel.objects.create(name='dataset-{}'.format(timestamp), owner=request.user)
         for f in files:
-            ImageModel.objects.create(file_obj=f, dataset=ds, owner=request.user)
+            ImageModel.objects.create(file_obj=f, dataset=ds)
         objects = DataSetModel.objects.all()
         return render(request, 'datasets.html', context={'datasets': objects})
 
@@ -56,18 +56,6 @@ def dataset(request, dataset_id):
         pass
     files = ImageModel.objects.filter(dataset=ds).all()
     return render(request, 'dataset.html', context={'dataset': ds, 'files': files})
-
-
-# ----------------------------------------------------------------------------------------------------------------------
-@login_required(login_url='/segmentation/accounts/login/')
-def jobs(request):
-    return render(request, 'jobs.html')
-
-
-# ----------------------------------------------------------------------------------------------------------------------
-@login_required(login_url='/segmentation/accounts/login/')
-def job(request, job_id):
-    return render(request, 'job.html')
 
 
 # ----------------------------------------------------------------------------------------------------------------------

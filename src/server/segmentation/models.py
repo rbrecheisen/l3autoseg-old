@@ -22,8 +22,6 @@ class ImageModel(models.Model):
     uploaded_at = models.DateTimeField(auto_now_add=True)
     done = models.BooleanField(null=False, default=False)
     dataset = models.ForeignKey(DataSetModel, on_delete=models.CASCADE)
-    owner = models.ForeignKey(
-        User, editable=False, related_name='+', on_delete=models.CASCADE)
 
 
 @receiver(models.signals.post_delete, sender=ImageModel)
