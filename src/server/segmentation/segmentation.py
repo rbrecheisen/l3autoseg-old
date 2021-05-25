@@ -13,8 +13,6 @@ def load_model():
 
 def segment_files(file_paths):
     model = load_model()
-    print('Loading model {}...'.format(model))
-    print('Segmenting images: {}'.format(file_paths))
     segmentation = Segmentation(model, file_paths)
     segmentation.predict_labels()
 
