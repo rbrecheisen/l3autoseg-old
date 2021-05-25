@@ -15,9 +15,13 @@
                     </ul>
                     {% endif %}
                     <br>
+                    <a href="/segmentation/datasets/{{ dataset.id }}?action=segment">
+                        <button class="btn btn-primary">Segment dataset</button>
+                    </a>
                     <a href="/segmentation/datasets/{{ dataset.id }}?action=delete">
                         <button class="btn btn-primary">Delete dataset</button>
                     </a>
+                    <p style="margin-top: 10px"><a href="/segmentation/datasets/{{ dataset.id }}">refresh page</a></p>
                     <p style="margin-top: 10px"><a href="/segmentation/datasets/">back</a></p>
                 </div>
             </div>
