@@ -51,13 +51,14 @@ def dataset(request, dataset_id):
         objects = DataSetModel.objects.all()
         return render(request, 'datasets.html', context={'datasets': objects})
     files = ImageModel.objects.filter(dataset=ds).all()
+    q = Queue(connection=Redis())
     if action == 'segment':
-        q = Queue(connection=Redis())
         job = q.enqueue(segment_files, files)
         ds.job_id = job.id
-        ds.job_status = job.status
         ds.save()
-    return render(request, 'dataset.html', context={'dataset': ds, 'files': files})
+    job = q.fetch_job(ds.job_id)
+    return render(request, 'dataset.html', context={
+        'dataset': ds, 'files': files, 'job_status': job.get_status()})
 
 
 # ----------------------------------------------------------------------------------------------------------------------
