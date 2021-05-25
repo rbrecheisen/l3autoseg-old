@@ -55,7 +55,7 @@ def dataset(request, dataset_id):
     if action == 'segment':
         file_paths = []
         for f in files:
-            file_paths.append(f.path)
+            file_paths.append(f.file_obj.path)
         job = q.enqueue(segment_files, file_paths)
         ds.job_id = job.id
         ds.save()
