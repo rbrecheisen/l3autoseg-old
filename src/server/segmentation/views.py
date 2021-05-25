@@ -57,8 +57,7 @@ def dataset(request, dataset_id):
         ds.job_id = job.id
         ds.job_status = job.status
         ds.save()
-    return render(request, 'dataset.html', context={
-        'dataset': ds, 'files': files, 'job_id': ds.job_id, 'job_status': ds.job_status})
+    return render(request, 'dataset.html', context={'dataset': ds, 'files': files})
 
 
 # ----------------------------------------------------------------------------------------------------------------------
