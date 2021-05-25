@@ -11,7 +11,7 @@ class TensorFlowModel(models.Model):
 class DataSetModel(models.Model):
     name = models.CharField(max_length=1024, editable=True, null=False)
     created_at = models.DateTimeField(auto_now_add=True)
-    job_id = models.CharField(max_length=16, null=False, default='')
+    job_id = models.CharField(max_length=16, null=True)
     progress = models.CharField(max_length=16, null=False, default='0/0')
     owner = models.ForeignKey(
         User, editable=False, related_name='+', on_delete=models.CASCADE)

@@ -56,9 +56,12 @@ def dataset(request, dataset_id):
         job = q.enqueue(segment_files, files)
         ds.job_id = job.id
         ds.save()
-    job = q.fetch_job(ds.job_id)
+    status = ''
+    if ds.job_id:
+        job = q.fetch_job(ds.job_id)
+        status = job.get_status()
     return render(request, 'dataset.html', context={
-        'dataset': ds, 'files': files, 'job_status': job.get_status()})
+        'dataset': ds, 'files': files, 'job_status': status})
 
 
 # ----------------------------------------------------------------------------------------------------------------------
