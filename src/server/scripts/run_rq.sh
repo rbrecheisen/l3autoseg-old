@@ -2,7 +2,7 @@
 
 source $HOME/.venv/l3autoseg/bin/activate
 
-export DJANGO_SETTINGS_MODULE=prestoweb.settings
+export DJANGO_SETTINGS_MODULE=server.settings
 export SQLITE3_DIR=/tmp/l3autoseg
 
 if [ "${1}" != "" ]; then
