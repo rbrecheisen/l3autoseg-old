@@ -11,10 +11,7 @@ def load_model():
     return tf.keras.models.load_model(settings.TENSORFLOW_MODEL_DIR)
 
 
-def segment_files(files):
-    file_paths = []
-    for f in files:
-        file_paths.append(f.path)
+def segment_files(file_paths):
     model = load_model()
     print('Loading model {}...'.format(model))
     print('Segmenting images: {}'.format(file_paths))

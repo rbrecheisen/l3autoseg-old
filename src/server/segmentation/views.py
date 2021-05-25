@@ -53,7 +53,10 @@ def dataset(request, dataset_id):
     files = ImageModel.objects.filter(dataset=ds).all()
     q = Queue(connection=Redis())
     if action == 'segment':
-        job = q.enqueue(segment_files, files)
+        file_paths = []
+        for f in files:
+            file_paths.append(f.path)
+        job = q.enqueue(segment_files, file_paths)
         ds.job_id = job.id
         ds.save()
     status = ''
