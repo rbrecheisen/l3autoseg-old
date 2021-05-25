@@ -2,6 +2,7 @@ import os
 import pydicom
 import numpy as np
 
+from barbell2light.dicom import get_pixels
 from django.conf import settings
 
 
