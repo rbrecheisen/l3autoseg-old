@@ -9,7 +9,7 @@ DEBUG = True if os.environ.get('DEBUG', 1) == 1 else False
 
 SQLITE3_DIR = os.environ.get('SQLITE3_DIR', BASE_DIR)
 
-TENSORFLOW_MODEL_DIR = 'tf'
+TENSORFLOW_MODEL_DIR = '/tmp/l3autoseg/model'
 
 ALLOWED_HOSTS = [
     '137.120.191.233',
