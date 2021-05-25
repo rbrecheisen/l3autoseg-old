@@ -2,6 +2,9 @@ from django.shortcuts import render
 from django.utils import timezone
 from django.contrib.auth.decorators import login_required
 from .models import TensorFlowModel, DataSetModel, ImageModel, ResultModel
+from rq import Queue
+from redis import Redis
+from .segmentation import segment_files
 
 
 # ----------------------------------------------------------------------------------------------------------------------
@@ -47,15 +50,15 @@ def dataset(request, dataset_id):
         ds.delete()
         objects = DataSetModel.objects.all()
         return render(request, 'datasets.html', context={'datasets': objects})
-    if action == 'segment':
-        # Start a segmentation job:
-        # Think about how you want to handle that. You could show the job status
-        # inside dataset.html page, or leave that up to a separate job.html page
-        # It's kind of intuitive to have that information in the dataset.html
-        # itself, instead of somewhere else.
-        pass
     files = ImageModel.objects.filter(dataset=ds).all()
-    return render(request, 'dataset.html', context={'dataset': ds, 'files': files})
+    if action == 'segment':
+        q = Queue(connection=Redis())
+        job = q.enqueue(segment_files, files)
+        ds.job_id = job.id
+        ds.job_status = job.status
+        ds.save()
+    return render(request, 'dataset.html', context={
+        'dataset': ds, 'files': files, 'job_id': ds.job_id, 'job_status': ds.job_status})
 
 
 # ----------------------------------------------------------------------------------------------------------------------
