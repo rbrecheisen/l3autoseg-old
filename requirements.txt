@@ -1,6 +1,7 @@
 django
 rq
 redis
-numpy
+numpy==1.19.2
 pydicom
 tensorflow
+wheel
