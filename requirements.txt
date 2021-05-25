@@ -6,3 +6,4 @@ pydicom
 tensorflow
 wheel
 barbell2light
+pandas
