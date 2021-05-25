@@ -16,6 +16,8 @@ def segment_files(files):
     for f in files:
         file_paths.append(f.path)
     model = load_model()
+    print('Loading model {}...'.format(model))
+    print('Segmenting images: {}'.format(file_paths))
     segmentation = Segmentation(model, file_paths)
     segmentation.predict_labels()
 
