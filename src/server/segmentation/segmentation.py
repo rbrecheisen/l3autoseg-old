@@ -54,4 +54,4 @@ class Segmentation:
         # pred_file_path = os.path.join(os.path.splitext(self.image_file_path)[0] + '_pred.npy')
         np.save(pred_file_path, pred_max)
         print('Predicted labels for {}'.format(self.image_file_path))
-        return pred_file_path
+        return pred_file_name, pred_file_path
