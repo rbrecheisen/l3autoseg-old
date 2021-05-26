@@ -62,10 +62,11 @@ def dataset(request, dataset_id):
     for img in images:
         if img.job_id:
             job = q.fetch_job(img.job_id)
-            img.job_status = job.get_status()
-            if img.job_status == 'finished':
-                img.pred_file_path = job.result
-            img.save()
+            if job:
+                img.job_status = job.get_status()
+                if img.job_status == 'finished':
+                    img.pred_file_path = job.result
+                img.save()
     return render(request, 'dataset.html', context={'dataset': ds, 'images': images})
 
     # if action == 'segment':
