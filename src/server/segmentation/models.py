@@ -20,7 +20,8 @@ class DataSetModel(models.Model):
 class ImageModel(models.Model):
     file_obj = models.FileField(upload_to='')
     uploaded_at = models.DateTimeField(auto_now_add=True)
-    done = models.BooleanField(null=False, default=False)
+    job_id = models.CharField(max_length=16, null=True)
+    job_status = models.CharField(max_length=16, null=True)
     pred_file_path = models.CharField(max_length=1024, null=True)
     dataset = models.ForeignKey(DataSetModel, on_delete=models.CASCADE)
 

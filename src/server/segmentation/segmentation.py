@@ -4,7 +4,6 @@ import numpy as np
 
 from barbell2light.dicom import get_pixels
 from django.conf import settings
-from .models import ImageModel
 
 
 def load_model():
@@ -18,12 +17,16 @@ def segment_images(image_ids):
     segmentation.predict_labels()
 
 
+def segment_image(image_file_path, model):
+    segmentation = Segmentation(model, [image_file_path])
+    return segmentation.predict_labels()
+
+
 class Segmentation:
 
-    def __init__(self, model, image_ids):
+    def __init__(self, model, image_file_paths):
         self.model = model
-        self.images = ImageModel.objects.filter(pk__in=image_ids)
-        # self.image_file_paths = image_file_paths
+        self.image_file_paths = image_file_paths
 
     @staticmethod
     def normalize(img, min_bound, max_bound):
@@ -36,10 +39,8 @@ class Segmentation:
         return img
 
     def predict_labels(self):
-        # pred_file_paths = []
-        # for image_file_path in self.image_file_paths:
-        for image in self.images:
-            image_file_path = image.file_obj.path
+        pred_file_paths = []
+        for image_file_path in self.image_file_paths:
             p = pydicom.read_file(image_file_path)
             img1 = get_pixels(p, normalize=True)
             img1 = self.normalize(img1, -200, 200)  # TODO: put this in params.json
@@ -51,8 +52,6 @@ class Segmentation:
             pred_max = pred_squeeze.argmax(axis=-1)
             pred_file_path = os.path.join(os.path.splitext(image_file_path)[0] + '_pred.npy')
             np.save(pred_file_path, pred_max)
-            image.pred_file_path = pred_file_path
-            image.save()
-            # pred_file_paths.append(pred_file_path)
+            pred_file_paths.append(pred_file_path)
             print('Predicted labels for {}'.format(image_file_path))
-        # return pred_file_paths
+        return pred_file_paths

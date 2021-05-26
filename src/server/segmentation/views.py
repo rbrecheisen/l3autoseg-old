@@ -4,7 +4,7 @@ from django.contrib.auth.decorators import login_required
 from .models import TensorFlowModel, DataSetModel, ImageModel, ResultModel
 from rq import Queue
 from redis import Redis
-from .segmentation import segment_images
+from .segmentation import load_model, segment_image, segment_images
 
 
 # ----------------------------------------------------------------------------------------------------------------------
@@ -44,30 +44,57 @@ def datasets(request):
 # ----------------------------------------------------------------------------------------------------------------------
 @login_required(login_url='/segmentation/accounts/login/')
 def dataset(request, dataset_id):
+
     ds = DataSetModel.objects.get(pk=dataset_id)
     action = request.GET.get('action', None)
+
     if action == 'delete':
         ds.delete()
         objects = DataSetModel.objects.all()
         return render(request, 'datasets.html', context={'datasets': objects})
-    images = ImageModel.objects.filter(dataset=ds).all()
+
     q = Queue(connection=Redis())
+
     if action == 'segment':
-        img_ids = []
-        # file_paths = []
+        m = load_model()
+        images = ImageModel.objects.filter(dataset=ds).all()
         for img in images:
-            # file_paths.append(img.file_obj.path)
-            img_ids.append(img.id)
-        # job = q.enqueue(segment_files, file_paths)
-        job = q.enqueue(segment_images, img_ids)
-        ds.job_id = job.id
-        ds.save()
-    status = ''
-    if ds.job_id:
-        job = q.fetch_job(ds.job_id)
-        status = job.get_status()
-    return render(request, 'dataset.html', context={
-        'dataset': ds, 'files': images, 'job_status': status})
+            job = q.enqueue(segment_image, img.file_obj.path, m)
+            img.job_id = job.id
+            img.job_status = job.get_status()
+            img.save()
+
+    images = ImageModel.objects.filter(dataset=ds).all()
+    for img in images:
+        job = q.fetch_job(img.job_id)
+        img.job_status = job.get_status()
+        img.save()
+
+    return render(request, 'dataset.html', context={'dataset': ds, 'images': images})
+
+    # if action == 'segment':
+    #     images = ImageModel.objects.filter(dataset=ds).all()
+    #     # Build JSON that contains file paths and, eventually, prediction file
+    #     # file paths for each image.
+    #     img_info = {}
+    #     for img in images:
+    #         img_info[img.id] = {'file_path': img.file_obj.path, 'pred_file_path': ''}
+    #     job = q.enqueue(segment_images, img_info)
+    #     ds.job_id = job.id
+    #     ds.save()
+    # status = ''
+    # if ds.job_id:
+    #     job = q.fetch_job(ds.job_id)
+    #     status = job.get_status()
+    #     if status == 'finished':
+    #         updated_img_info = job.result
+    #         images = ImageModel.objects.filter(pk__in=updated_img_info.keys())
+    #         for img in images:
+    #             img.pred_file_path = updated_img_info[img.id]['pred_file_path']
+    #             img.save()
+    # images = ImageModel.objects.filter(dataset=ds).all()
+    # return render(request, 'dataset.html', context={
+    #     'dataset': ds, 'images': images, 'job_status': status})
 
 
 # ----------------------------------------------------------------------------------------------------------------------

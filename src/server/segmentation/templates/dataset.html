@@ -4,13 +4,13 @@
     <div class="row">
         <div class="col-sm-10">
             <div class="card" style="margin-top: 10px;">
-                <div class="card-header">Dataset <b>{{ dataset.name }}</b> [{{ job_status }}]</div>
+                <div class="card-header">Dataset <b>{{ dataset.name }}</b></div>
                 <div class="card-body">
-                    {% if files %}
-                    <b>Files</b>
+                    {% if images %}
+                    <b>Images</b>
                     <ul class="list-group">
-                        {% for f in files %}
-                        <li class="list-group-item">{{ f.file_obj.name }}</li>
+                        {% for img in images %}
+                        <li class="list-group-item">{{ img.file_obj.name }} [ {{ img.job_status }}]</li>
                         {% endfor %}
                     </ul>
                     {% endif %}
