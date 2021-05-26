@@ -1,10 +1,10 @@
 from django.shortcuts import render
 from django.utils import timezone
 from django.contrib.auth.decorators import login_required
-from .models import TensorFlowModel, DataSetModel, ImageModel, ResultModel
+from .models import DataSetModel, ImageModel
 from rq import Queue
 from redis import Redis
-from .segmentation import load_model, segment_image, segment_images
+from .segmentation import segment_image
 
 
 # ----------------------------------------------------------------------------------------------------------------------
