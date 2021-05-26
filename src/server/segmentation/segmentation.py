@@ -17,7 +17,9 @@ def segment_images(image_ids):
     segmentation.predict_labels()
 
 
-def segment_image(image_file_path, model):
+def segment_image(image_file_path):
+    print('Loading model...')
+    model = load_model()
     segmentation = Segmentation(model, [image_file_path])
     return segmentation.predict_labels()
 
