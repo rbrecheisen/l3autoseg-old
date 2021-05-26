@@ -4,7 +4,7 @@ from django.contrib.auth.decorators import login_required
 from .models import TensorFlowModel, DataSetModel, ImageModel, ResultModel
 from rq import Queue
 from redis import Redis
-from .segmentation import segment_files
+from .segmentation import segment_images
 
 
 # ----------------------------------------------------------------------------------------------------------------------
@@ -50,13 +50,16 @@ def dataset(request, dataset_id):
         ds.delete()
         objects = DataSetModel.objects.all()
         return render(request, 'datasets.html', context={'datasets': objects})
-    files = ImageModel.objects.filter(dataset=ds).all()
+    images = ImageModel.objects.filter(dataset=ds).all()
     q = Queue(connection=Redis())
     if action == 'segment':
-        file_paths = []
-        for f in files:
-            file_paths.append(f.file_obj.path)
-        job = q.enqueue(segment_files, file_paths)
+        img_ids = []
+        # file_paths = []
+        for img in images:
+            # file_paths.append(img.file_obj.path)
+            img_ids.append(img.id)
+        # job = q.enqueue(segment_files, file_paths)
+        job = q.enqueue(segment_images, img_ids)
         ds.job_id = job.id
         ds.save()
     status = ''
@@ -64,7 +67,7 @@ def dataset(request, dataset_id):
         job = q.fetch_job(ds.job_id)
         status = job.get_status()
     return render(request, 'dataset.html', context={
-        'dataset': ds, 'files': files, 'job_status': status})
+        'dataset': ds, 'files': images, 'job_status': status})
 
 
 # ----------------------------------------------------------------------------------------------------------------------
