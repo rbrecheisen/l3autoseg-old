@@ -66,10 +66,8 @@ def dataset(request, dataset_id):
             if job:
                 img.job_status = job.get_status()
                 if img.job_status == 'finished':
-                    img.pred_file_path = job.result
-                    png_file_name, png_file_path = create_png(img)
-                    img.png_file_path = png_file_path
-                    img.png_file_name = png_file_name
+                    img.pred_file_name, img.pred_file_path = job.result
+                    img.png_file_name, img.png_file_path = create_png(img)
                 img.save()
     return render(request, 'dataset.html', context={'dataset': ds, 'images': images})
 

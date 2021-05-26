@@ -22,9 +22,10 @@ class ImageModel(models.Model):
     uploaded_at = models.DateTimeField(auto_now_add=True)
     job_id = models.CharField(max_length=16, null=True)
     job_status = models.CharField(max_length=16, null=True)
+    pred_file_name = models.CharField(max_length=1024, null=True)
     pred_file_path = models.CharField(max_length=1024, null=True)
-    png_file_path = models.CharField(max_length=1024, null=True)
     png_file_name = models.CharField(max_length=1024, null=True)
+    png_file_path = models.CharField(max_length=1024, null=True)
     dataset = models.ForeignKey(DataSetModel, on_delete=models.CASCADE)
 
 
@@ -35,6 +36,8 @@ def image_post_delete(sender, instance, **kwargs):
             os.remove(instance.file_obj.path)
         if instance.pred_file_path and os.path.isfile(instance.pred_file_path):
             os.remove(instance.pred_file_path)
+        if instance.png_file_path and os.path.isfile(instance.png_file_path):
+            os.remove(instance.png_file_path)
 
 
 class ResultModel(models.Model):
