@@ -24,8 +24,8 @@ def create_png(image):
     ax = fig.add_subplot(1, 2, 2)
     plt.imshow(prediction, cmap='viridis')
     ax.axis('off')
-    png_name = '{}.png'.format(image_id)
-    png_file_path = os.path.join(image_file_dir, png_name)
+    png_file_name = '{}.png'.format(image_id)
+    png_file_path = os.path.join(image_file_dir, png_file_name)
     plt.savefig(png_file_path, bbox_inches='tight')
     plt.close('all')
-    return png_file_path
+    return png_file_name, png_file_path
