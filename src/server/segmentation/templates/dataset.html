@@ -10,7 +10,14 @@
                     <b>Images</b>
                     <ul class="list-group">
                         {% for img in images %}
-                        <li class="list-group-item">{{ img.file_obj.name }} [ {{ img.job_status }}]</li>
+                            {% if img.job_status == "finished" %}
+                            <li class="list-group-item">
+                                {{ img.file_obj.name }} [ {{ img.job_status }}]
+                                <a href="/segmentation/files/{{ img.png_file_path }}">PNG</a>
+                            </li>
+                            {% else %}
+                            <li class="list-group-item">{{ img.file_obj.name }} [ {{ img.job_status }}]</li>
+                            {% endif %}}
                         {% endfor %}
                     </ul>
                     {% endif %}

@@ -5,6 +5,7 @@ from .models import DataSetModel, ImageModel
 from rq import Queue
 from redis import Redis
 from .segmentation import segment_image
+from .rendering import create_png
 
 
 # ----------------------------------------------------------------------------------------------------------------------
@@ -66,13 +67,14 @@ def dataset(request, dataset_id):
                 img.job_status = job.get_status()
                 if img.job_status == 'finished':
                     img.pred_file_path = job.result
+                    img.png_file_path = create_png(img)
                 img.save()
     return render(request, 'dataset.html', context={'dataset': ds, 'images': images})
 
 
 # ----------------------------------------------------------------------------------------------------------------------
 @login_required(login_url='/segmentation/accounts/login/')
-def results(request):
+def results(request, dataset_id):
     return render(request, 'results.html')
 
 

@@ -23,6 +23,7 @@ class ImageModel(models.Model):
     job_id = models.CharField(max_length=16, null=True)
     job_status = models.CharField(max_length=16, null=True)
     pred_file_path = models.CharField(max_length=1024, null=True)
+    png_file_path = models.CharField(max_length=1024, null=True)
     dataset = models.ForeignKey(DataSetModel, on_delete=models.CASCADE)
 
 
