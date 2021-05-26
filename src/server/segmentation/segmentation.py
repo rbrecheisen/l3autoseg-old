@@ -11,24 +11,18 @@ def load_model():
     return tf.keras.models.load_model(settings.TENSORFLOW_MODEL_DIR)
 
 
-def segment_images(image_ids):
-    model = load_model()
-    segmentation = Segmentation(model, image_ids)
-    segmentation.predict_labels()
-
-
 def segment_image(image_file_path):
     print('Loading model...')
     model = load_model()
-    segmentation = Segmentation(model, [image_file_path])
+    segmentation = Segmentation(model, image_file_path)
     return segmentation.predict_labels()
 
 
 class Segmentation:
 
-    def __init__(self, model, image_file_paths):
+    def __init__(self, model, image_file_path):
         self.model = model
-        self.image_file_paths = image_file_paths
+        self.image_file_path = image_file_path
 
     @staticmethod
     def normalize(img, min_bound, max_bound):
@@ -41,19 +35,16 @@ class Segmentation:
         return img
 
     def predict_labels(self):
-        pred_file_paths = []
-        for image_file_path in self.image_file_paths:
-            p = pydicom.read_file(image_file_path)
-            img1 = get_pixels(p, normalize=True)
-            img1 = self.normalize(img1, -200, 200)  # TODO: put this in params.json
-            img1 = img1.astype(np.float32)
-            img2 = np.expand_dims(img1, 0)
-            img2 = np.expand_dims(img2, -1)
-            pred = self.model.predict([img2])
-            pred_squeeze = np.squeeze(pred)
-            pred_max = pred_squeeze.argmax(axis=-1)
-            pred_file_path = os.path.join(os.path.splitext(image_file_path)[0] + '_pred.npy')
-            np.save(pred_file_path, pred_max)
-            pred_file_paths.append(pred_file_path)
-            print('Predicted labels for {}'.format(image_file_path))
-        return pred_file_paths
+        p = pydicom.read_file(self.image_file_path)
+        img1 = get_pixels(p, normalize=True)
+        img1 = self.normalize(img1, -200, 200)  # TODO: put this in params.json
+        img1 = img1.astype(np.float32)
+        img2 = np.expand_dims(img1, 0)
+        img2 = np.expand_dims(img2, -1)
+        pred = self.model.predict([img2])
+        pred_squeeze = np.squeeze(pred)
+        pred_max = pred_squeeze.argmax(axis=-1)
+        pred_file_path = os.path.join(os.path.splitext(self.image_file_path)[0] + '_pred.npy')
+        np.save(pred_file_path, pred_max)
+        print('Predicted labels for {}'.format(self.image_file_path))
+        return pred_file_path

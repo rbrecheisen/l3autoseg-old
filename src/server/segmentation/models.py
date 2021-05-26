@@ -31,6 +31,8 @@ def image_post_delete(sender, instance, **kwargs):
     if instance.file_obj:
         if os.path.isfile(instance.file_obj.path):
             os.remove(instance.file_obj.path)
+        if os.path.isfile(instance.pred_file_path):
+            os.remove(instance.pred_file_path)
 
 
 class ResultModel(models.Model):

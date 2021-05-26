@@ -44,17 +44,13 @@ def datasets(request):
 # ----------------------------------------------------------------------------------------------------------------------
 @login_required(login_url='/segmentation/accounts/login/')
 def dataset(request, dataset_id):
-
     ds = DataSetModel.objects.get(pk=dataset_id)
     action = request.GET.get('action', None)
-
     if action == 'delete':
         ds.delete()
         objects = DataSetModel.objects.all()
         return render(request, 'datasets.html', context={'datasets': objects})
-
     q = Queue(connection=Redis())
-
     if action == 'segment':
         images = ImageModel.objects.filter(dataset=ds).all()
         for img in images:
@@ -62,14 +58,14 @@ def dataset(request, dataset_id):
             img.job_id = job.id
             img.job_status = job.get_status()
             img.save()
-
     images = ImageModel.objects.filter(dataset=ds).all()
     for img in images:
         if img.job_id:
             job = q.fetch_job(img.job_id)
             img.job_status = job.get_status()
+            if img.job_status == 'finished':
+                img.pred_file_path = job.result
             img.save()
-
     return render(request, 'dataset.html', context={'dataset': ds, 'images': images})
 
     # if action == 'segment':
