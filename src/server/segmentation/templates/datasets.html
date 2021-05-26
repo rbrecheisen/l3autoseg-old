@@ -18,6 +18,7 @@
                         {% for dataset in datasets %}
                         <li class="list-group-item">
                             <a href="/segmentation/datasets/{{ dataset.id }}">{{ dataset.name }}</a>
+                            [<a href="/segmentation/datasets/{{ dataset.id }}?action=delete">delete</a>]
                         </li>
                         {% endfor %}
                     </ul>
