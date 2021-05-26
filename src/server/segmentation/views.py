@@ -65,9 +65,10 @@ def dataset(request, dataset_id):
 
     images = ImageModel.objects.filter(dataset=ds).all()
     for img in images:
-        job = q.fetch_job(img.job_id)
-        img.job_status = job.get_status()
-        img.save()
+        if img.job_id:
+            job = q.fetch_job(img.job_id)
+            img.job_status = job.get_status()
+            img.save()
 
     return render(request, 'dataset.html', context={'dataset': ds, 'images': images})
 
