@@ -1,12 +1,24 @@
-<html>
-<h1>Welcome to the L3 body composition app</h1>
-<p>
-    This app allows you to segment muscle and fat tissue in CT images taken at the L3 vertebral level
-    as well as calculate various clinical scores from these segmentations.
-</p>
-Please choose one of the following:
-<ul>
-    <li><a href="/segmentation/">Segmentation</a></li>
-    <li><a href="/scoring/">Scoring</a></li>
-</ul>
-</html>
+{% extends "base.html" %}
+{% block content %}
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-sm-10">
+            <div class="card" style="margin-top: 10px;">
+                <div class="card-header">Introduction</div>
+                <div class="card-body">
+                    <p>
+                        This app allows you to segment muscle and fat tissue in CT images taken at the L3 vertebral level
+                        as well as calculate various clinical scores from these segmentations.
+                    </p>
+                    <br>
+                    <p>Please select one of the following links:</p>
+                    <ul>
+                        <li><a href="/segmentation/">Segmentation</a></li>
+                        <li><a href="/scoring/">Scoring</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
