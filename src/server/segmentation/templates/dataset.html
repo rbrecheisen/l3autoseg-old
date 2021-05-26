@@ -13,7 +13,7 @@
                             {% if img.job_status == "finished" %}
                             <li class="list-group-item">
                                 {{ img.file_obj.name }} [ {{ img.job_status }}]
-                                <a href="/segmentation/files/{{ img.png_file_path }}">PNG</a>
+                                <a href="/segmentation/files/{{ img.png_file_name }}">PNG</a>
                             </li>
                             {% else %}
                             <li class="list-group-item">{{ img.file_obj.name }} [ {{ img.job_status }}]</li>
