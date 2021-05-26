@@ -8,7 +8,7 @@ from django.conf import settings
 
 def load_model():
     import tensorflow as tf
-    return tf.keras.models.load_model(settings.TENSORFLOW_MODEL_DIR)
+    return tf.keras.models.load_model(settings.TENSORFLOW_MODEL_DIR, compile=False)
 
 
 def segment_image(image_file_path):

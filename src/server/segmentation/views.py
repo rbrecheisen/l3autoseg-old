@@ -69,30 +69,6 @@ def dataset(request, dataset_id):
                 img.save()
     return render(request, 'dataset.html', context={'dataset': ds, 'images': images})
 
-    # if action == 'segment':
-    #     images = ImageModel.objects.filter(dataset=ds).all()
-    #     # Build JSON that contains file paths and, eventually, prediction file
-    #     # file paths for each image.
-    #     img_info = {}
-    #     for img in images:
-    #         img_info[img.id] = {'file_path': img.file_obj.path, 'pred_file_path': ''}
-    #     job = q.enqueue(segment_images, img_info)
-    #     ds.job_id = job.id
-    #     ds.save()
-    # status = ''
-    # if ds.job_id:
-    #     job = q.fetch_job(ds.job_id)
-    #     status = job.get_status()
-    #     if status == 'finished':
-    #         updated_img_info = job.result
-    #         images = ImageModel.objects.filter(pk__in=updated_img_info.keys())
-    #         for img in images:
-    #             img.pred_file_path = updated_img_info[img.id]['pred_file_path']
-    #             img.save()
-    # images = ImageModel.objects.filter(dataset=ds).all()
-    # return render(request, 'dataset.html', context={
-    #     'dataset': ds, 'images': images, 'job_status': status})
-
 
 # ----------------------------------------------------------------------------------------------------------------------
 @login_required(login_url='/segmentation/accounts/login/')
