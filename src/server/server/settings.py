@@ -3,13 +3,16 @@ from pathlib import Path
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+ROOT_DIR = '{}/data/l3autoseg'.format(os.environ['HOME'])
+
 SECRET_KEY = os.environ.get('SECRET_KEY', '1234')
 
 DEBUG = True if os.environ.get('DEBUG', 1) == 1 else False
 
-SQLITE3_DIR = os.environ.get('SQLITE3_DIR', BASE_DIR)
+SQLITE3_DIR = os.environ.get('SQLITE3_DIR', ROOT_DIR)
 
-TENSORFLOW_MODEL_DIR = '/tmp/l3autoseg/model'
+# This directory should already exist and contain TensorFlow model files
+TENSORFLOW_MODEL_DIR = os.path.join(ROOT_DIR, 'model')
 
 ALLOWED_HOSTS = [
     '137.120.191.233',
@@ -88,7 +91,7 @@ STATIC_URL = '/static/'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-MEDIA_ROOT = '/tmp/l3autoseg'
+MEDIA_ROOT = os.path.join(ROOT_DIR, 'files')
 os.makedirs(MEDIA_ROOT, exist_ok=True)
 
 MEDIA_URL = '/segmentation/files/'
