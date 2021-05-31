@@ -12,7 +12,6 @@ def load_model():
 
 
 def segment_image(image_file_path):
-    print('Loading model...')
     model = load_model()
     segmentation = Segmentation(model, image_file_path)
     return segmentation.predict_labels()
@@ -44,14 +43,9 @@ class Segmentation:
         pred = self.model.predict([img2])
         pred_squeeze = np.squeeze(pred)
         pred_max = pred_squeeze.argmax(axis=-1)
-        print(self.image_file_path)
         pred_file_name = os.path.split(self.image_file_path)[1]
-        print(pred_file_name)
         pred_file_name = os.path.splitext(pred_file_name)[0] + '_pred.npy'
-        print(pred_file_name)
         pred_file_path = os.path.join(os.path.split(self.image_file_path)[0], pred_file_name)
-        print(pred_file_path)
-        # pred_file_path = os.path.join(os.path.splitext(self.image_file_path)[0] + '_pred.npy')
         np.save(pred_file_path, pred_max)
         print('Predicted labels for {}'.format(self.image_file_path))
         return pred_file_name, pred_file_path

@@ -49,8 +49,8 @@ def dataset(request, dataset_id):
     action = request.GET.get('action', None)
     if action == 'delete':
         ds.delete()
-        objects = DataSetModel.objects.all()
-        return render(request, 'datasets.html', context={'datasets': objects})
+        datasets = DataSetModel.objects.all()
+        return render(request, 'datasets.html', context={'datasets': datasets})
     q = Queue(connection=Redis())
     if action == 'segment':
         images = ImageModel.objects.filter(dataset=ds).all()
@@ -60,6 +60,7 @@ def dataset(request, dataset_id):
             img.job_status = job.get_status()
             img.save()
     images = ImageModel.objects.filter(dataset=ds).all()
+    nr_secs = 5 * len(images)
     for img in images:
         if img.job_id:
             job = q.fetch_job(img.job_id)
@@ -69,7 +70,7 @@ def dataset(request, dataset_id):
                     img.pred_file_name, img.pred_file_path = job.result
                     img.png_file_name, img.png_file_path = create_png(img)
                 img.save()
-    return render(request, 'dataset.html', context={'dataset': ds, 'images': images})
+    return render(request, 'dataset.html', context={'dataset': ds, 'images': images, 'nr_secs': nr_secs})
 
 
 # ----------------------------------------------------------------------------------------------------------------------
