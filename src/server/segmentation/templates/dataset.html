@@ -17,7 +17,7 @@
                                     <a href="/segmentation/files/{{ img.pred_file_name }}">NPY</a>
                                 </li>
                             {% else %}
-                                {% if img.job_status != "" %}
+                                {% if img.job_status %}
                                     <li class="list-group-item">{{ img.file_obj.name }} [ {{ img.job_status }}]</li>
                                 {% else %}
                                     <li class="list-group-item">{{ img.file_obj.name }}</li>
