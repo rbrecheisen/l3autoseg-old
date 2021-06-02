@@ -16,18 +16,6 @@ def index(request):
 
 # ----------------------------------------------------------------------------------------------------------------------
 @login_required(login_url='/segmentation/accounts/login/')
-def models(request):
-    return render(request, 'models.html')
-
-
-# ----------------------------------------------------------------------------------------------------------------------
-@login_required(login_url='/segmentation/accounts/login/')
-def model(request, model_id):
-    return render(request, 'model.html')
-
-
-# ----------------------------------------------------------------------------------------------------------------------
-@login_required(login_url='/segmentation/accounts/login/')
 def datasets(request):
     if request.method == 'GET':
         objects = DataSetModel.objects.all()
@@ -72,15 +60,3 @@ def dataset(request, dataset_id):
                     img.png_file_name, img.png_file_path = create_png(img)
                 img.save()
     return render(request, 'dataset.html', context={'dataset': ds, 'images': images, 'nr_secs': nr_secs})
-
-
-# ----------------------------------------------------------------------------------------------------------------------
-@login_required(login_url='/segmentation/accounts/login/')
-def results(request, dataset_id):
-    return render(request, 'results.html')
-
-
-# ----------------------------------------------------------------------------------------------------------------------
-@login_required(login_url='/segmentation/accounts/login/')
-def result(request, result_id):
-    return render(request, 'result.html')

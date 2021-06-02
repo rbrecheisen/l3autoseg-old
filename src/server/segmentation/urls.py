@@ -3,12 +3,10 @@ from . import views
 
 
 urlpatterns = [
+    # HTML
     path('', views.index),
-    path('models/', views.models),
-    path('models/<str:model_id>', views.model),
     path('datasets/', views.datasets),
     path('datasets/<str:dataset_id>', views.dataset),
-    path('results/', views.results),
-    path('results/<str:result_id>', views.result),
     path('accounts/', include('django.contrib.auth.urls')),
+    # REST API
 ]

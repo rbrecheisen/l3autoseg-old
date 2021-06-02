@@ -1,4 +1,5 @@
 django
+djangorestframework
 rq
 redis
 numpy==1.19.2
