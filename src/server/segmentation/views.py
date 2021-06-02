@@ -54,6 +54,7 @@ def dataset(request, dataset_id):
     q = Queue(connection=Redis())
     if action == 'segment':
         images = ImageModel.objects.filter(dataset=ds).all()
+        # We're creating a new job for every image so that we can track the status per image
         for img in images:
             job = q.enqueue(segment_image, img.file_obj.path)
             img.job_id = job.id
