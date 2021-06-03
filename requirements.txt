@@ -9,3 +9,5 @@ wheel
 barbell2light
 pandas
 matplotlib
+psycopg2-binary
+uwsgi
