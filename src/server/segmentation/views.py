@@ -46,7 +46,9 @@ def dataset(request, dataset_id):
     q = django_rq.get_queue('default')
 
     # TODO:
-    # Can I pass model objects to the job?
+    # Can I pass model objects to the job? Try to define the long-running task in views.py
+    # and use the @job decorator
+    # https://spapas.github.io/2015/09/01/django-rq-redux/
 
     if action == 'segment':
         images = ImageModel.objects.filter(dataset=ds).all()
