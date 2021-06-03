@@ -1,1 +1,8 @@
 TODO
+- download zip with numpy arrays
+- put downloads behind login
+- select model version
+- merge app, scoring and segmentation into single app
+- nginx upload zip and decompress
+  o https://github.com/vsoch/django-nginx-upload/issues/16
+  o https://www.pataliebre.net/howto-make-nginx-decompress-a-gzipped-request.html#.YLio1DYzbUJ
