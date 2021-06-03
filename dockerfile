@@ -16,7 +16,9 @@ ADD requirements.txt /tmp/requirements.txt
 RUN pip install --upgrade pip
 RUN pip install -r /tmp/requirements.txt
 
-ADD . /code/
+ADD ./src/server /code/
+ADD ./uwsgi.ini /code/uwsgi.ini
+ADD ./run_uwsgi.sh /code/run_uwsgi.sh
 
 
 ################################################################################
@@ -24,7 +26,7 @@ ADD . /code/
 
 #RUN mkdir -p /code/images && \
 RUN mkdir -p /var/www/images && \
-    chmod -R 0755 /code/images/ && \
+#    chmod -R 0755 /code/images/ && \
     # Create hashed temporary upload locations
     mkdir -p /var/www/images/_upload/{0..9} && chmod 777 -R /var/www/images/_upload
 
