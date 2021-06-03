@@ -49,7 +49,7 @@ def dataset(request, dataset_id):
             img.job_status = job.get_status()
             img.save()
     images = ImageModel.objects.filter(dataset=ds).all()
-    nr_secs = 5 * len(images)
+    nr_secs = 8 * len(images)
     for img in images:
         if img.job_id:
             job = q.fetch_job(img.job_id)
