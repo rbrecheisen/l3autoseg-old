@@ -44,7 +44,10 @@ def dataset(request, dataset_id):
         dds = DataSetModel.objects.all()
         return render(request, 'datasets.html', context={'datasets': dds})
     q = django_rq.get_queue('default')
-    # q = Queue(connection=Redis())
+
+    # TODO:
+    # Can I pass model objects to the job?
+
     if action == 'segment':
         images = ImageModel.objects.filter(dataset=ds).all()
         for img in images:
