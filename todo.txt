@@ -1,4 +1,6 @@
 TODO
+
+- initialize GPU once for whole dataset
 - download zip with numpy arrays
 - put downloads behind login
 - select model version
