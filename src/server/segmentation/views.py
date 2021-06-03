@@ -7,6 +7,8 @@ from redis import Redis
 from .segmentation import segment_image
 from .rendering import create_png
 
+from barbell2light.utils import duration
+
 
 # ----------------------------------------------------------------------------------------------------------------------
 @login_required(login_url='/segmentation/accounts/login/')
@@ -49,7 +51,7 @@ def dataset(request, dataset_id):
             img.job_status = job.get_status()
             img.save()
     images = ImageModel.objects.filter(dataset=ds).all()
-    nr_secs = 8 * len(images)
+    time_req = duration(8 * len(images))
     for img in images:
         if img.job_id:
             job = q.fetch_job(img.job_id)
@@ -59,4 +61,4 @@ def dataset(request, dataset_id):
                     img.pred_file_name, img.pred_file_path = job.result
                     img.png_file_name, img.png_file_path = create_png(img)
                 img.save()
-    return render(request, 'dataset.html', context={'dataset': ds, 'images': images, 'nr_secs': nr_secs})
+    return render(request, 'dataset.html', context={'dataset': ds, 'images': images, 'time_req': time_req})
