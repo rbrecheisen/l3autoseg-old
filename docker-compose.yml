@@ -33,6 +33,7 @@ services:
     container_name: l3autoseg_uwsgi
     volumes:
       - ./src/server:/code
+      - ./run_uwsgi.sh:/code/run_uwsgi.sh:ro
       - static_data:/var/www/static
       - image_data:/var/www/images
     links:
