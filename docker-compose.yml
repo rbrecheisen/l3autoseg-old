@@ -28,11 +28,12 @@ services:
       - db
 
   uwsgi:
-    restart: always
+    #restart: always
     build: .
     container_name: l3autoseg_uwsgi
     volumes:
       - ./src/server:/code
+      - ./uwsgi.ini:/code/uwsgi.ini
       - ./run_uwsgi.sh:/code/run_uwsgi.sh:ro
       - static_data:/var/www/static
       - image_data:/var/www/images
