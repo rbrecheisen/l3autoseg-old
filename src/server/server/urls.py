@@ -8,6 +8,7 @@ urlpatterns = [
     path('segmentation/', include('segmentation.urls')),
     path('scoring/', include('scoring.urls')),
     path('admin/', admin.site.urls),
+    path('django-rq/', include('django_rq.urls')),
 ]
 
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

@@ -1,3 +1,5 @@
+import django_rq
+
 from django.shortcuts import render
 from django.utils import timezone
 from django.contrib.auth.decorators import login_required
@@ -39,12 +41,12 @@ def dataset(request, dataset_id):
     action = request.GET.get('action', None)
     if action == 'delete':
         ds.delete()
-        datasets = DataSetModel.objects.all()
-        return render(request, 'datasets.html', context={'datasets': datasets})
-    q = Queue(connection=Redis())
+        dds = DataSetModel.objects.all()
+        return render(request, 'datasets.html', context={'datasets': dds})
+    q = django_rq.get_queue('default')
+    # q = Queue(connection=Redis())
     if action == 'segment':
         images = ImageModel.objects.filter(dataset=ds).all()
-        # We're creating a new job for every image so that we can track the status per image
         for img in images:
             job = q.enqueue(segment_image, img.file_obj.path)
             img.job_id = job.id
