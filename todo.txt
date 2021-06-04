@@ -1,14 +1,14 @@
 TODO
 
-- download zip with numpy arrays
-- put downloads behind login
-- select model version
-- nginx upload zip and decompress
-  o https://github.com/vsoch/django-nginx-upload/issues/16
-  o https://www.pataliebre.net/howto-make-nginx-decompress-a-gzipped-request.html#.YLio1DYzbUJ
-- implement rest interface
+MUST DO:
+
+- implement REST interface
   o refactor to remove code duplication
   o move segmentation code out of view to separate class
+- put downloads behind login (also needed for REST)
+
+NICE TO HAVE:
+
+- download zip with numpy arrays
+- select model version
 - show progress at dataset level
-- do not display 1000s of images at refresh
-- run create_png in separate job (if there are too many images)
