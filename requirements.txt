@@ -1,7 +1,6 @@
 django
 djangorestframework
 django-rq
-rq
 redis
 numpy==1.19.2
 pydicom
