@@ -110,14 +110,12 @@ USE_L10N = True
 
 USE_TZ = True
 
+DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
 STATIC_URL = '/static/'
-# STATIC_ROOT = '/var/www/static'
 STATIC_ROOT = os.path.join(ROOT_DIR, 'static')
 os.makedirs(STATIC_ROOT, exist_ok=True)
 
-DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
-
-MEDIA_URL = '/segmentation/files/'
-# MEDIA_ROOT = '/var/www/images'
+MEDIA_URL = '/files/'
 MEDIA_ROOT = os.path.join(ROOT_DIR, 'files')
 os.makedirs(MEDIA_ROOT, exist_ok=True)

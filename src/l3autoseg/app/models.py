@@ -12,7 +12,6 @@ class DataSetModel(models.Model):
     name = models.CharField(max_length=1024, editable=True, null=False)
     created_at = models.DateTimeField(auto_now_add=True)
     job_id = models.CharField(max_length=16, null=True)
-    progress = models.CharField(max_length=16, null=False, default='0/0')
     owner = models.ForeignKey(
         User, editable=False, related_name='+', on_delete=models.CASCADE)
 
@@ -37,7 +36,3 @@ def image_post_delete(sender, instance, **kwargs):
             os.remove(instance.pred_file_path)
         if instance.png_file_path and os.path.isfile(instance.png_file_path):
             os.remove(instance.png_file_path)
-
-
-class ResultModel(models.Model):
-    pass
