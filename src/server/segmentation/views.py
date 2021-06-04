@@ -3,20 +3,10 @@ import django_rq
 from django.shortcuts import render
 from django.utils import timezone
 from django.contrib.auth.decorators import login_required
-from django.conf import settings
-from barbell2light.utils import duration
+from barbell2light.utils import duration, current_time_secs, elapsed_secs
 from .models import DataSetModel, ImageModel
-from .segmentation import segment_image
+from .segmentation import segment_images
 from .rendering import create_png
-
-
-@django_rq.job
-def segment_images(images):
-    import tensorflow as tf
-    model = tf.keras.models.load_model(
-        settings.TENSORFLOW_MODEL_DIR, compile=False)
-    for img in images:
-        print(img)
 
 
 # ----------------------------------------------------------------------------------------------------------------------
@@ -50,24 +40,31 @@ def dataset(request, dataset_id):
         ds.delete()
         dds = DataSetModel.objects.all()
         return render(request, 'datasets.html', context={'datasets': dds})
-
-    # TODO:
-    # Can I pass model objects to the job? Try to define the long-running task in views.py
-    # and use the @job decorator
-    # https://spapas.github.io/2015/09/01/django-rq-redux/
-
     images = ImageModel.objects.filter(dataset=ds).all()
+    q = django_rq.get_queue('default')
+    start_time = -1
     if action == 'segment':
-        q = django_rq.get_queue('default')
-        # images = ImageModel.objects.filter(dataset=ds).all()
+        start_time = current_time_secs()
+        print('starting segmentation...')
         job = q.enqueue(segment_images, images)
-        print(job.get_status())
-        # for img in images:
-        #     job = q.enqueue(segment_image, img.file_obj.path)
-        #     img.job_id = job.id
-        #     img.job_status = job.get_status()
-        #     img.save()
+        ds.job_id = job.id
+        ds.save()
+        for img in images:
+            img.job_status = 'queued'
+            img.save()
     time_req = duration(8 * len(images))
+    if ds.job_id:
+        job = q.fetch_job(ds.job_id)
+        if job and job.get_status() == 'finished':
+            for img in images:
+                img.job_status = 'finished'
+                img.png_file_name, img.png_file_path = create_png(img)
+                img.save()
+            if start_time < 0:
+                raise RuntimeError('Start time is -1')
+            elapsed = elapsed_secs(start_time)
+            print('segmentation ready after {}'.format(duration(elapsed)))
+    images = ImageModel.objects.filter(dataset=ds).all()
     # for img in images:
     #     if img.job_id:
     #         job = q.fetch_job(img.job_id)
@@ -77,5 +74,4 @@ def dataset(request, dataset_id):
     #                 img.pred_file_name, img.pred_file_path = job.result
     #                 img.png_file_name, img.png_file_path = create_png(img)
     #             img.save()
-    return render(request, 'dataset.html', context={
-        'dataset': ds, 'images': images, 'time_req': time_req})
+    return render(request, 'dataset.html', context={'dataset': ds, 'images': images, 'time_req': time_req})
