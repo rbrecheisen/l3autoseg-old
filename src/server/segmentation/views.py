@@ -38,6 +38,10 @@ def dataset(request, dataset_id):
     images = ImageModel.objects.filter(dataset=ds).all()
     time_req = duration(8 * len(images))
     action = request.GET.get('action', None)
+    if action == 'delete':
+        ds.delete()
+        dds = DataSetModel.objects.all()
+        return render(request, 'datasets.html', context={'datasets': dds})
     if action == 'clear':
         ds.job_id = None
         ds.save()
