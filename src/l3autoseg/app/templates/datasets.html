@@ -6,7 +6,7 @@
             <div class="card" style="margin-top: 10px;">
                 <div class="card-header">Datasets</div>
                 <div class="card-body">
-                    <form action="/segmentation/datasets/" method="post" enctype="multipart/form-data">
+                    <form action="/datasets/" method="post" enctype="multipart/form-data">
                         {% csrf_token %}
                         <label for="files">Select L3 images:</label>
                         <input type="file" id="files" name="files" multiple/><br><br>
@@ -17,13 +17,13 @@
                     <ul class="list-group">
                         {% for dataset in datasets %}
                         <li class="list-group-item">
-                            <a href="/segmentation/datasets/{{ dataset.id }}">{{ dataset.name }}</a>
-                            [<a href="/segmentation/datasets/{{ dataset.id }}?action=delete">delete</a>]
+                            <a href="/datasets/{{ dataset.id }}">{{ dataset.name }}</a>
+                            [<a href="/datasets/{{ dataset.id }}?action=delete">delete</a>]
                         </li>
                         {% endfor %}
                     </ul>
                     {% endif %}
-                    <p style="margin-top: 10px"><a href="/segmentation/">Back</a></p>
+                    <p style="margin-top: 10px"><a href="/">Back</a></p>
                 </div>
             </div>
         </div>

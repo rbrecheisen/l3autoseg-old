@@ -10,13 +10,13 @@ from .rendering import create_png
 
 
 # ----------------------------------------------------------------------------------------------------------------------
-@login_required(login_url='/segmentation/accounts/login/')
+@login_required
 def index(request):
-    return render(request, 'segmentation.html')
+    return render(request, 'index.html')
 
 
 # ----------------------------------------------------------------------------------------------------------------------
-@login_required(login_url='/segmentation/accounts/login/')
+@login_required
 def datasets(request):
     if request.method == 'GET':
         objects = DataSetModel.objects.all()
@@ -32,7 +32,7 @@ def datasets(request):
 
 
 # ----------------------------------------------------------------------------------------------------------------------
-@login_required(login_url='/segmentation/accounts/login/')
+@login_required
 def dataset(request, dataset_id):
     ds = DataSetModel.objects.get(pk=dataset_id)
     images = ImageModel.objects.filter(dataset=ds).all()
@@ -73,6 +73,6 @@ def dataset(request, dataset_id):
 
 
 # ----------------------------------------------------------------------------------------------------------------------
-@login_required(login_url='/segmentation/accounts/login/')
+@login_required
 def download(request):
     pass
