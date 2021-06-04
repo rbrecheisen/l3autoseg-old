@@ -5,8 +5,6 @@ from django.conf.urls.static import static
 
 urlpatterns = [
     path('', include('app.urls')),
-    path('segmentation/', include('segmentation.urls')),
-    path('scoring/', include('scoring.urls')),
     path('admin/', admin.site.urls),
     path('django-rq/', include('django_rq.urls')),
 ]
