@@ -7,7 +7,6 @@
                 <div class="card-header">Dataset <b>{{ dataset.name }}</b></div>
                 <div class="card-body">
                     {% if images %}
-                    <b>Images</b>
                     To start segmentation of the above images, click the "Segment" button. Segmentation
                     of the images will take about {{ time_req }}. You can click the "Refresh page"
                     link below to refresh the page and view status updates for each image. To view the
@@ -17,7 +16,8 @@
                         <button class="btn btn-primary">Segment</button>
                     </a>
                     <br>
-                    To redo the segmentation (and overwrite previous results), click the "Clear results" button.
+                    <br>
+                    To redo the segmentation (and overwrite previous results), click the "Clear results" button.<br>
                     <br>
                     <a href="/segmentation/datasets/{{ dataset.id }}?action=clear">
                         <button class="btn btn-primary">Clear results</button>
@@ -26,6 +26,7 @@
                     <p style="margin-top: 10px"><a href="/segmentation/datasets/{{ dataset.id }}">Refresh page</a></p>
                     <p style="margin-top: 10px"><a href="/segmentation/datasets/">Back</a></p>
                     <br>
+                    <b>Images</b><br>
                     <ul class="list-group">
                         {% for img in images %}
                             {% if img.job_status == "finished" %}
