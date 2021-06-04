@@ -60,9 +60,13 @@ def dataset(request, dataset_id):
             img.save()
     if ds.job_id:
         job = q.fetch_job(ds.job_id)
-        if job and job.get_status() == 'finished':
-            for img in images:
-                if img.png_file_name is None:
-                    img.png_file_name, img.png_file_path = create_png(img)
-                    img.save()
+        if job:
+            # Per-image job status may have been updated in RQ (separate thread) so we need to
+            # re-retrieve the images to get these updates
+            images = ImageModel.objects.filter(dataset=ds).all()
+            if job.get_status() == 'finished':
+                for img in images:
+                    if img.png_file_name is None:
+                        img.png_file_name, img.png_file_path = create_png(img)
+                        img.save()
     return render(request, 'dataset.html', context={'dataset': ds, 'images': images, 'time_req': time_req})
