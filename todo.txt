@@ -1,6 +1,5 @@
 TODO
 
-- initialize GPU once for whole dataset
 - download zip with numpy arrays
 - put downloads behind login
 - select model version
@@ -8,3 +7,6 @@ TODO
 - nginx upload zip and decompress
   o https://github.com/vsoch/django-nginx-upload/issues/16
   o https://www.pataliebre.net/howto-make-nginx-decompress-a-gzipped-request.html#.YLio1DYzbUJ
+- implement rest interface
+  o refactor to remove code duplication
+  o move segmentation code out of view to separate class

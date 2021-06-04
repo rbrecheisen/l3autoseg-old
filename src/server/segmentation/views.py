@@ -3,7 +3,7 @@ import django_rq
 from django.shortcuts import render
 from django.utils import timezone
 from django.contrib.auth.decorators import login_required
-from barbell2light.utils import duration, current_time_secs, elapsed_secs
+from barbell2light.utils import duration
 from .models import DataSetModel, ImageModel
 from .segmentation import segment_images
 from .rendering import create_png
