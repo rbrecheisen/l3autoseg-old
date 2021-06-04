@@ -70,3 +70,9 @@ def dataset(request, dataset_id):
                         img.png_file_name, img.png_file_path = create_png(img)
                         img.save()
     return render(request, 'dataset.html', context={'dataset': ds, 'images': images, 'time_req': time_req})
+
+
+# ----------------------------------------------------------------------------------------------------------------------
+@login_required(login_url='/segmentation/accounts/login/')
+def download(request):
+    pass
