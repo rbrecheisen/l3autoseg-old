@@ -10,3 +10,6 @@ TODO
 - implement rest interface
   o refactor to remove code duplication
   o move segmentation code out of view to separate class
+- show progress at dataset level
+- do not display 1000s of images at refresh
+- run create_png in separate job (if there are too many images)
