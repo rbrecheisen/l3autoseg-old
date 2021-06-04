@@ -36,7 +36,8 @@ def datasets(request):
 def dataset(request, dataset_id):
     ds = DataSetModel.objects.get(pk=dataset_id)
     images = ImageModel.objects.filter(dataset=ds).all()
-    time_req = duration(8 * len(images))
+    # Time required: 11s for GPU initialization, 0.5s per image
+    time_req = duration(int(11 + 0.5 * len(images)) + 1)
     action = request.GET.get('action', None)
     if action == 'delete':
         ds.delete()
@@ -64,5 +65,4 @@ def dataset(request, dataset_id):
                 if img.png_file_name is None:
                     img.png_file_name, img.png_file_path = create_png(img)
                     img.save()
-    # TODO: check that image job status has been updated, i.e., should be "queued"
     return render(request, 'dataset.html', context={'dataset': ds, 'images': images, 'time_req': time_req})
