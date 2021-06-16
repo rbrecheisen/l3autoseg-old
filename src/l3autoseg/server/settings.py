@@ -94,7 +94,7 @@ REST_FRAMEWORK = {
 RQ_QUEUES = {
     'default': {
         'HOST': 'localhost',
-        'PORT': 6379,
+        'PORT': 6378,
         'DB': 0,
         'DEFAULT_TIMEOUT': 360,
     }
