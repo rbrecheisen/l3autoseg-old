@@ -46,14 +46,11 @@ def dataset(request, dataset_id):
         ds.delete()
         dds = DataSetModel.objects.all()
         return render(request, 'datasets.html', context={'datasets': dds})
-    if action == 'clear':
-        ds.job_id = None
-        ds.save()
-        for img in images:
-            img.clear_results()
-        return render(request, 'dataset.html', context={'dataset': ds, 'images': images, 'time_req': time_req})
     q = django_rq.get_queue('default')
     if action == 'segment':
+        # Clear any previous results
+        for img in images:
+            img.clear_results()
         job = q.enqueue(segment_images, images)
         ds.job_id = job.id
         ds.save()
