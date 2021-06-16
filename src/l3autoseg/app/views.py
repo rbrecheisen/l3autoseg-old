@@ -76,7 +76,7 @@ def dataset(request, dataset_id):
 def downloads(request, dataset_id):
     ds = DataSetModel.objects.get(pk=dataset_id)
     images = ImageModel.objects.filter(dataset=ds).all()
-    zip_file_path = '/tmp/{}.zip'.format(dataset_id)
+    zip_file_path = '/tmp/{}.zip'.format(ds.name)
     with ZipFile(zip_file_path, 'w') as zip_obj:
         for img in images:
             zip_obj.write(img.file_obj.path)
@@ -86,5 +86,5 @@ def downloads(request, dataset_id):
                 zip_obj.write(img.png_file_path)
     with open(zip_file_path, 'rb') as f:
         response = HttpResponse(File(f), content_type='application/octet-stream')
-        response['Content-Disposition'] = 'attachment; filename="{}.zip"'.format(dataset_id)
+        response['Content-Disposition'] = 'attachment; filename="{}.zip"'.format(ds.name)
         return response
