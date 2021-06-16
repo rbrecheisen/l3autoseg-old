@@ -7,6 +7,10 @@ import django_rq
 from barbell2light.dicom import get_pixels
 from django.conf import settings
 
+MUSCLE = 1
+VAT = 2
+SAT = 3
+
 
 def load_model():
     import tensorflow as tf
@@ -18,6 +22,10 @@ def load_params():
         return json.load(f)
 
 
+def cm2inch(value):
+    return value/2.54
+
+
 @django_rq.job
 def segment_images(images):
     model = load_model()
@@ -25,7 +33,6 @@ def segment_images(images):
     for img in images:
         segmentation = Segmentation(img, model, params)
         segmentation.predict_labels()
-        segmentation.score()
         print(img)
 
 
@@ -66,6 +73,18 @@ class Segmentation:
         self.image.pred_file_name = pred_file_name
         self.image.pred_file_path = pred_file_path
         self.image.save()
+        # Calculate SMRA
+        img = get_pixels(p, normalize=True)
+        labels = pred_max
+        smra = self.calculate_smra(img, labels)
+        print('SMRA: {}'.format(smra))
 
-    def score(self):
-        pass
+    @staticmethod
+    def calculate_smra(image, labels):
+        mask = np.copy(labels)
+        mask[mask != MUSCLE] = 0
+        mask[mask == MUSCLE] = 1
+        subtracted = image * mask
+        smra = np.sum(subtracted) / np.sum(mask)
+        return smra
+
