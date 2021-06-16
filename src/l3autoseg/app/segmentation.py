@@ -88,7 +88,7 @@ class Segmentation:
         with open(json_file_path, 'w') as f:
             json.dump({
                 'smra': smra,
-                'musle_area': muscle_area,
+                'muscle_area': muscle_area,
                 'vat_area': vat_area,
                 'sat_area': sat_area
             }, f, indent=4)
