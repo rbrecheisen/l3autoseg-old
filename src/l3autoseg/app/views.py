@@ -41,8 +41,6 @@ def dataset(request, dataset_id):
     time_req = duration(int(11 + 0.5 * len(images)) + 1)
     action = request.GET.get('action', None)
     if action == 'delete':
-        os.remove('/tmp/{}.zip'.format(ds.name))
-        os.remove('/tmp/{}-scores.csv'.format(ds.name))
         ds.delete()
         dds = DataSetModel.objects.all()
         return render(request, 'datasets.html', context={'datasets': dds})
@@ -104,6 +102,9 @@ def downloads(request, dataset_id):
         scores_file_path = '/tmp/{}-scores.csv'.format(ds.name)
         scores.to_csv(scores_file_path, index=False)
         add_to_zip(scores_file_path, zip_obj)
+    ds.zip_file_path = zip_file_path
+    ds.scores_file_path = scores_file_path
+    ds.save()
     with open(zip_file_path, 'rb') as f:
         response = HttpResponse(File(f), content_type='application/octet-stream')
         response['Content-Disposition'] = 'attachment; filename="{}.zip"'.format(ds.name)

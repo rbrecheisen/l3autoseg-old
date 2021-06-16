@@ -14,6 +14,16 @@ class DataSetModel(models.Model):
     job_id = models.CharField(max_length=16, null=True)
     owner = models.ForeignKey(
         User, editable=False, related_name='+', on_delete=models.CASCADE)
+    zip_file_path = models.CharField(max_length=1024, null=True)
+    scores_file_path = models.CharField(max_length=1024, null=True)
+
+
+@receiver(models.signals.post_delete, sender=DataSetModel)
+def dataset_post_delete(sender, instance, **kwargs):
+    if instance.zip_file_path and os.path.isfile(instance.zip_file_path):
+        os.remove(instance.zip_file_path)
+    if instance.scores_file_path and os.path.isfile(instance.scores_file_path):
+        os.remove(instance.scores_file_path)
 
 
 class ImageModel(models.Model):
