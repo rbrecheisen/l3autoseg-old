@@ -14,7 +14,7 @@
                     </p>
                     <p>To delete the dataset, click the [delete] link next to it.</p>
                     <br>
-                    <form action="/datasets/" method="post" enctype="multipart/form-data">
+                    <form action="/" method="post" enctype="multipart/form-data">
                         {% csrf_token %}
                         <label for="files">Select L3 images:</label>
                         <input type="file" id="files" name="files" multiple/><br><br>
