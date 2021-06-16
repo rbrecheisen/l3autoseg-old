@@ -1,4 +1,5 @@
 import json
+import os
 import django_rq
 import pandas as pd
 
@@ -40,6 +41,8 @@ def dataset(request, dataset_id):
     time_req = duration(int(11 + 0.5 * len(images)) + 1)
     action = request.GET.get('action', None)
     if action == 'delete':
+        os.remove('/tmp/{}.zip'.format(ds.name))
+        os.remove('/tmp/{}-scores.csv'.format(ds.name))
         ds.delete()
         dds = DataSetModel.objects.all()
         return render(request, 'datasets.html', context={'datasets': dds})
