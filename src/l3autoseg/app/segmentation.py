@@ -72,19 +72,29 @@ class Segmentation:
         self.image.job_status = 'finished'
         self.image.pred_file_name = pred_file_name
         self.image.pred_file_path = pred_file_path
-        self.image.save()
-        # Calculate SMRA
+
         img = get_pixels(p, normalize=True)
         labels = pred_max
         smra = self.calculate_smra(img, labels)
-        # Calculate muscle and fat areas
+
         pixel_spacing = p.PixelSpacing
         muscle_area = self.calculate_area(labels, MUSCLE, pixel_spacing)
         vat_area = self.calculate_area(labels, VAT, pixel_spacing)
         sat_area = self.calculate_area(labels, SAT, pixel_spacing)
-        print('SMRA: {}, muscle area: {}, VAT area: {}, SAT area: {}'.format(
-            smra, muscle_area, vat_area, sat_area
-        ))
+        json_file_name = os.path.split(self.image.file_obj.path)[1]
+        json_file_name = os.path.splitext(json_file_name)[0] + '.json'
+        json_file_path = os.path.join(os.path.split(self.image.file_obj.path)[0], json_file_name)
+        print('SMRA: {}, muscle area: {}, VAT area: {}, SAT area: {}'.format(smra, muscle_area, vat_area, sat_area))
+        with open(json_file_path, 'w') as f:
+            json.dump({
+                'smra': smra,
+                'musle_area': muscle_area,
+                'vat_area': vat_area,
+                'sat_area': sat_area
+            }, f, indent=4)
+        self.image.json_file_name = json_file_name
+        self.image.json_file_path = json_file_path
+        self.image.save()
 
     @staticmethod
     def calculate_smra(image, labels):
