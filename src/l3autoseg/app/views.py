@@ -3,7 +3,10 @@ import django_rq
 from django.shortcuts import render
 from django.utils import timezone
 from django.contrib.auth.decorators import login_required
+from django.http import HttpResponse
+from django.core.files import File
 from barbell2light.utils import duration
+from zipfile import ZipFile
 from .models import DataSetModel, ImageModel
 from .segmentation import segment_images
 from .rendering import create_png
@@ -47,8 +50,7 @@ def dataset(request, dataset_id):
         ds.job_id = None
         ds.save()
         for img in images:
-            img.job_status = None
-            img.save()
+            img.clear_results()
         return render(request, 'dataset.html', context={'dataset': ds, 'images': images, 'time_req': time_req})
     q = django_rq.get_queue('default')
     if action == 'segment':
@@ -74,5 +76,18 @@ def dataset(request, dataset_id):
 
 # ----------------------------------------------------------------------------------------------------------------------
 @login_required
-def download(request):
-    pass
+def downloads(request, dataset_id):
+    ds = DataSetModel.objects.get(pk=dataset_id)
+    images = ImageModel.objects.filter(dataset=ds).all()
+    zip_file_path = '/tmp/{}.zip'.format(dataset_id)
+    with ZipFile(zip_file_path, 'w') as zip_obj:
+        for img in images:
+            zip_obj.write(img.file_obj.path)
+            if img.pred_file_path:
+                zip_obj.write(img.pred_file_path)
+            if img.png_file_path:
+                zip_obj.write(img.png_file_path)
+    with open(zip_file_path, 'rb') as f:
+        response = HttpResponse(File(f), content_type='application/octet-stream')
+        response['Content-Disposition'] = 'attachment; filename="{}.zip"'.format(dataset_id)
+        return response

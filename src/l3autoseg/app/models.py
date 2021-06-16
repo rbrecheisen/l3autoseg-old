@@ -26,6 +26,18 @@ class ImageModel(models.Model):
     png_file_path = models.CharField(max_length=1024, null=True)
     dataset = models.ForeignKey(DataSetModel, on_delete=models.CASCADE)
 
+    def clear_results(self):
+        if self.pred_file_path and os.path.isfile(str(self.pred_file_path)):
+            os.remove(str(self.pred_file_path))
+            self.pred_file_name = None
+            self.pred_file_path = None
+        if self.png_file_path and os.path.isfile(str(self.png_file_path)):
+            os.remove(str(self.png_file_path))
+            self.png_file_name = None
+            self.png_file_path = None
+        self.job_status = None
+        self.save()
+
 
 @receiver(models.signals.post_delete, sender=ImageModel)
 def image_post_delete(sender, instance, **kwargs):

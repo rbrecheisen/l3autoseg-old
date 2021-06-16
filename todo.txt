@@ -9,6 +9,6 @@ MUST DO:
 
 NICE TO HAVE:
 
-- download zip with numpy arrays
+- downloads zip with numpy arrays
 - select model version
 - show progress at dataset level

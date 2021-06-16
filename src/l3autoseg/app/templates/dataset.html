@@ -7,7 +7,7 @@
                 <div class="card-header">Dataset <b>{{ dataset.name }}</b></div>
                 <div class="card-body">
                     {% if images %}
-                        To start segmentation of the above images, click the "Segment" button. Segmentation
+                        To start segmentation of the images below, click the "Segment" button. Segmentation
                         of the images will take about {{ time_req }}. You can click the "Refresh page"
                         link below to refresh the page and view status updates for each image.<br>
                         <br>
@@ -15,11 +15,16 @@
                             <button class="btn btn-primary">Segment</button>
                         </a>
                         <br>
-                        <br>
-                        To redo the segmentation (and overwrite previous results), click the "Clear results" button.<br>
+                        To redo the segmentation, click the "Clear results" button.<br>
                         <br>
                         <a href="/datasets/{{ dataset.id }}?action=clear">
                             <button class="btn btn-primary">Clear results</button>
+                        </a>
+                        <br>
+                        To download all results as a ZIP file, click the link below.<br>
+                        <br>
+                        <a href="/downloads/{{ dataset.id }}">
+                            <button class="btn btn-primary">Download results as ZIP file</button>
                         </a>
                         <br>
                         <p style="margin-top: 10px"><a href="/datasets/{{ dataset.id }}">Refresh page</a></p>
