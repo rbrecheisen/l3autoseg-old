@@ -1,4 +1,6 @@
+import json
 import django_rq
+import pandas as pd
 
 from os.path import basename
 from django.shortcuts import render
@@ -68,6 +70,18 @@ def add_to_zip(file_path, zip_obj):
     zip_obj.write(file_path, arcname=basename(file_path))
 
 
+def collect_scores(images):
+    scores = {'smra': [], 'muscle_area': [], 'vat_area': [], 'sat_area': []}
+    for img in images:
+        with open(img.json_file_path, 'r') as f:
+            data = json.load(f)
+        scores['smra'].append(data['smra'])
+        scores['muscle_area'].append(data['muscle_area'])
+        scores['vat_area'].append(data['vat_area'])
+        scores['sat_area'].append(data['sat_area'])
+    return pd.DataFrame(data=scores)
+
+
 @login_required
 def downloads(request, dataset_id):
     ds = DataSetModel.objects.get(pk=dataset_id)
@@ -82,6 +96,10 @@ def downloads(request, dataset_id):
                 add_to_zip(img.png_file_path, zip_obj)
             if img.json_file_path:
                 add_to_zip(img.json_file_path, zip_obj)
+        scores = collect_scores(images)
+        scores_file_path = '/tmp/{}-scores.csv'.format(ds.name)
+        scores.to_csv(scores_file_path)
+        add_to_zip(scores_file_path, zip_obj)
     with open(zip_file_path, 'rb') as f:
         response = HttpResponse(File(f), content_type='application/octet-stream')
         response['Content-Disposition'] = 'attachment; filename="{}.zip"'.format(ds.name)
