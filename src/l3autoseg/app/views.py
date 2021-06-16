@@ -15,12 +15,6 @@ from .rendering import create_png
 
 # ----------------------------------------------------------------------------------------------------------------------
 @login_required
-def index(request):
-    return render(request, 'index.html')
-
-
-# ----------------------------------------------------------------------------------------------------------------------
-@login_required
 def datasets(request):
     if request.method == 'GET':
         objects = DataSetModel.objects.all()
