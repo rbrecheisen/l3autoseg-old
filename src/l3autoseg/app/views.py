@@ -80,6 +80,8 @@ def downloads(request, dataset_id):
                 add_to_zip(img.pred_file_path, zip_obj)
             if img.png_file_path:
                 add_to_zip(img.png_file_path, zip_obj)
+            if img.json_file_path:
+                add_to_zip(img.json_file_path, zip_obj)
     with open(zip_file_path, 'rb') as f:
         response = HttpResponse(File(f), content_type='application/octet-stream')
         response['Content-Disposition'] = 'attachment; filename="{}.zip"'.format(ds.name)
