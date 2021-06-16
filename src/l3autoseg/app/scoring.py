@@ -27,16 +27,16 @@ def cm2inch(value):
 
 
 @django_rq.job
-def segment_images(images):
+def score_images(images):
     model = load_model()
     params = load_params()
     for img in images:
-        segmentation = Segmentation(img, model, params)
-        segmentation.predict_labels()
+        calculation = ScoreCalculation(img, model, params)
+        calculation.execute()
         print(img)
 
 
-class Segmentation:
+class ScoreCalculation:
 
     def __init__(self, image, model, params):
         self.image = image
@@ -53,7 +53,7 @@ class Segmentation:
         img = np.divide(c, d, np.zeros_like(c), where=d != 0)
         return img
 
-    def predict_labels(self):
+    def execute(self):
         self.image.job_status = 'running'
         self.image.save()
         p = pydicom.read_file(self.image.file_obj.path)

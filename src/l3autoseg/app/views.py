@@ -1,5 +1,4 @@
 import json
-import os
 import django_rq
 import pandas as pd
 
@@ -12,7 +11,7 @@ from django.core.files import File
 from barbell2light.utils import duration
 from zipfile import ZipFile
 from .models import DataSetModel, ImageModel
-from .segmentation import segment_images
+from .scoring import score_images
 from .rendering import create_png
 
 
@@ -45,8 +44,8 @@ def dataset(request, dataset_id):
         dds = DataSetModel.objects.all()
         return render(request, 'datasets.html', context={'datasets': dds})
     q = django_rq.get_queue('default')
-    if action == 'segment':
-        job = q.enqueue(segment_images, images)
+    if action == 'score':
+        job = q.enqueue(score_images, images)
         ds.job_id = job.id
         ds.save()
         for img in images:
