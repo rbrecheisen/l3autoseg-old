@@ -11,9 +11,9 @@
                         L3 vertebral level. You can upload multiple DICOM images at once. These will form
                         a new dataset that will be displayed below. Click the dataset name to view the
                         uploaded files contained by the dataset and start the segmentation.
-
-                        To delete the dataset, click the [delete] link next to it.
                     </p>
+                    <p>To delete the dataset, click the [delete] link next to it.</p>
+                    <br>
                     <form action="/datasets/" method="post" enctype="multipart/form-data">
                         {% csrf_token %}
                         <label for="files">Select L3 images:</label>
