@@ -77,13 +77,10 @@ def downloads(request, dataset_id):
     zip_file_path = '/tmp/{}.zip'.format(ds.name)
     with ZipFile(zip_file_path, 'w') as zip_obj:
         for img in images:
-            # zip_obj.write(img.file_obj.path)
             add_to_zip(img.file_obj.path, zip_obj)
             if img.pred_file_path:
-                # zip_obj.write(img.pred_file_path)
                 add_to_zip(img.pred_file_path, zip_obj)
             if img.png_file_path:
-                # zip_obj.write(img.png_file_path)
                 add_to_zip(img.png_file_path, zip_obj)
     with open(zip_file_path, 'rb') as f:
         response = HttpResponse(File(f), content_type='application/octet-stream')
