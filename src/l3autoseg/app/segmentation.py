@@ -77,7 +77,14 @@ class Segmentation:
         img = get_pixels(p, normalize=True)
         labels = pred_max
         smra = self.calculate_smra(img, labels)
-        print('SMRA: {}'.format(smra))
+        # Calculate muscle and fat areas
+        pixel_spacing = p.PixelSpacing
+        muscle_area = self.calculate_area(labels, MUSCLE, pixel_spacing)
+        vat_area = self.calculate_area(labels, VAT, pixel_spacing)
+        sat_area = self.calculate_area(labels, SAT, pixel_spacing)
+        print('SMRA: {}, muscle area: {}, VAT area: {}, SAT area: {}'.format(
+            smra, muscle_area, vat_area, sat_area
+        ))
 
     @staticmethod
     def calculate_smra(image, labels):
@@ -87,4 +94,12 @@ class Segmentation:
         subtracted = image * mask
         smra = np.sum(subtracted) / np.sum(mask)
         return smra
+
+    @staticmethod
+    def calculate_area(labels, label, pixel_spacing):
+        mask = np.copy(labels)
+        mask[mask != label] = 0
+        mask[mask == label] = 1
+        area = np.sum(mask) * (pixel_spacing[0] * pixel_spacing[1]) / 100.0
+        return area
 
