@@ -43,8 +43,6 @@ def dataset(request, dataset_id):
         return render(request, 'datasets.html', context={'datasets': dds})
     q = django_rq.get_queue('default')
     if action == 'segment':
-        for img in images:
-            img.clear_results()
         job = q.enqueue(segment_images, images)
         ds.job_id = job.id
         ds.save()
