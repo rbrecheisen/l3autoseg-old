@@ -1,4 +1,5 @@
 import os
+import json
 import pydicom
 import numpy as np
 import django_rq
@@ -12,20 +13,28 @@ def load_model():
     return tf.keras.models.load_model(settings.TENSORFLOW_MODEL_DIR, compile=False)
 
 
+def load_params():
+    with open(settings.TENSORFLOW_PARAMS_FILE, 'r') as f:
+        return json.load(f)
+
+
 @django_rq.job
 def segment_images(images):
     model = load_model()
+    params = load_params()
     for img in images:
-        segmentation = Segmentation(model, img)
+        segmentation = Segmentation(img, model, params)
         segmentation.predict_labels()
+        segmentation.score()
         print(img)
 
 
 class Segmentation:
 
-    def __init__(self, model, image):
-        self.model = model
+    def __init__(self, image, model, params):
         self.image = image
+        self.model = model
+        self.params = params
 
     @staticmethod
     def normalize(img, min_bound, max_bound):
@@ -42,7 +51,7 @@ class Segmentation:
         self.image.save()
         p = pydicom.read_file(self.image.file_obj.path)
         img1 = get_pixels(p, normalize=True)
-        img1 = self.normalize(img1, -200, 200)  # TODO: put this in params.json
+        img1 = self.normalize(img1, self.params['min_bound'], self.params['max_bound'])
         img1 = img1.astype(np.float32)
         img2 = np.expand_dims(img1, 0)
         img2 = np.expand_dims(img2, -1)
@@ -57,3 +66,6 @@ class Segmentation:
         self.image.pred_file_name = pred_file_name
         self.image.pred_file_path = pred_file_path
         self.image.save()
+
+    def score(self):
+        pass

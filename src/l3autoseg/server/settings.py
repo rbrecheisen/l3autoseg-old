@@ -14,6 +14,7 @@ SQLITE3_DIR = os.environ.get('SQLITE3_DIR', ROOT_DIR)
 # This directory should already exist and contain TensorFlow model files
 TENSORFLOW_MODEL_VERSION = 'v1'
 TENSORFLOW_MODEL_DIR = os.path.join(ROOT_DIR, 'model', TENSORFLOW_MODEL_VERSION)
+TENSORFLOW_PARAMS_FILE = os.path.join(TENSORFLOW_MODEL_DIR, 'params.json')
 
 ALLOWED_HOSTS = [
     '137.120.191.233',
