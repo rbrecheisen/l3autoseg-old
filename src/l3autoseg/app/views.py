@@ -71,10 +71,11 @@ def add_to_zip(file_path, zip_obj):
 
 
 def collect_scores(images):
-    scores = {'smra': [], 'muscle_area': [], 'vat_area': [], 'sat_area': []}
+    scores = {'file_name': [], 'smra': [], 'muscle_area': [], 'vat_area': [], 'sat_area': []}
     for img in images:
         with open(img.json_file_path, 'r') as f:
             data = json.load(f)
+        scores['file_name'].append(img.file_obj.name)
         scores['smra'].append(data['smra'])
         scores['muscle_area'].append(data['muscle_area'])
         scores['vat_area'].append(data['vat_area'])
@@ -98,7 +99,7 @@ def downloads(request, dataset_id):
                 add_to_zip(img.json_file_path, zip_obj)
         scores = collect_scores(images)
         scores_file_path = '/tmp/{}-scores.csv'.format(ds.name)
-        scores.to_csv(scores_file_path)
+        scores.to_csv(scores_file_path, index=False)
         add_to_zip(scores_file_path, zip_obj)
     with open(zip_file_path, 'rb') as f:
         response = HttpResponse(File(f), content_type='application/octet-stream')
