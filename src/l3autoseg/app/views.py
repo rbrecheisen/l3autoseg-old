@@ -15,7 +15,6 @@ from .scoring import score_images
 from .rendering import create_png
 
 
-# ----------------------------------------------------------------------------------------------------------------------
 @login_required
 def datasets(request):
     if request.method == 'GET':
@@ -31,7 +30,6 @@ def datasets(request):
         return render(request, 'datasets.html', context={'datasets': objects})
 
 
-# ----------------------------------------------------------------------------------------------------------------------
 @login_required
 def dataset(request, dataset_id):
     ds = DataSetModel.objects.get(pk=dataset_id)
@@ -65,7 +63,6 @@ def dataset(request, dataset_id):
     return render(request, 'dataset.html', context={'dataset': ds, 'images': images, 'time_req': time_req})
 
 
-# ----------------------------------------------------------------------------------------------------------------------
 def add_to_zip(file_path, zip_obj):
     zip_obj.write(file_path, arcname=basename(file_path))
 

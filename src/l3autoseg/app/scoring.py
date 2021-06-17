@@ -53,7 +53,26 @@ class ScoreCalculation:
         img = np.divide(c, d, np.zeros_like(c), where=d != 0)
         return img
 
+    @staticmethod
+    def calculate_smra(image, labels):
+        mask = np.copy(labels)
+        mask[mask != MUSCLE] = 0
+        mask[mask == MUSCLE] = 1
+        subtracted = image * mask
+        smra = np.sum(subtracted) / np.sum(mask)
+        return smra
+
+    @staticmethod
+    def calculate_area(labels, label, pixel_spacing):
+        mask = np.copy(labels)
+        mask[mask != label] = 0
+        mask[mask == label] = 1
+        area = np.sum(mask) * (pixel_spacing[0] * pixel_spacing[1]) / 100.0
+        return area
+
     def execute(self):
+
+        # Run segmentation
         self.image.job_status = 'running'
         self.image.save()
         p = pydicom.read_file(self.image.file_obj.path)
@@ -73,10 +92,13 @@ class ScoreCalculation:
         self.image.pred_file_name = pred_file_name
         self.image.pred_file_path = pred_file_path
 
+        # Calculate SMRA
         img = get_pixels(p, normalize=True)
         labels = pred_max
         smra = self.calculate_smra(img, labels)
+        print('SMRA: {}'.format(smra))
 
+        # Calculate muscle, SAT and VAT areas
         pixel_spacing = p.PixelSpacing
         muscle_area = self.calculate_area(labels, MUSCLE, pixel_spacing)
         vat_area = self.calculate_area(labels, VAT, pixel_spacing)
@@ -84,7 +106,9 @@ class ScoreCalculation:
         json_file_name = os.path.split(self.image.file_obj.path)[1]
         json_file_name = os.path.splitext(json_file_name)[0] + '.json'
         json_file_path = os.path.join(os.path.split(self.image.file_obj.path)[0], json_file_name)
-        print('SMRA: {}, muscle area: {}, VAT area: {}, SAT area: {}'.format(smra, muscle_area, vat_area, sat_area))
+        print('muscle area: {}, VAT area: {}, SAT area: {}'.format(muscle_area, vat_area, sat_area))
+
+        # Save scores to JSON and update image object
         with open(json_file_path, 'w') as f:
             json.dump({
                 'smra': smra,
@@ -95,21 +119,3 @@ class ScoreCalculation:
         self.image.json_file_name = json_file_name
         self.image.json_file_path = json_file_path
         self.image.save()
-
-    @staticmethod
-    def calculate_smra(image, labels):
-        mask = np.copy(labels)
-        mask[mask != MUSCLE] = 0
-        mask[mask == MUSCLE] = 1
-        subtracted = image * mask
-        smra = np.sum(subtracted) / np.sum(mask)
-        return smra
-
-    @staticmethod
-    def calculate_area(labels, label, pixel_spacing):
-        mask = np.copy(labels)
-        mask[mask != label] = 0
-        mask[mask == label] = 1
-        area = np.sum(mask) * (pixel_spacing[0] * pixel_spacing[1]) / 100.0
-        return area
-
