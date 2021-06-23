@@ -6,7 +6,9 @@
             <div class="card" style="margin-top: 10px;">
                 <div class="card-header">Dataset <b>{{ dataset.name }}</b></div>
                 <div class="card-body">
+                    Model: {{ model_dir }}<br>
                     {% if images %}
+                        <br>
                         To start scoring the images below, click the "Calculate scores" button below. This process
                         will take about <b>{{ time_req }}</b>. You can click the "Refresh page" link to refresh the
                         page and view status updates for each image. After the calculation has finished, you can
