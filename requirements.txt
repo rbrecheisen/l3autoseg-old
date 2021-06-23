@@ -9,5 +9,6 @@ wheel
 barbell2light
 pandas
 matplotlib
+python-gdcm
 #psycopg2-binary
 #uwsgi
