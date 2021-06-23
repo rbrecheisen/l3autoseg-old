@@ -20,7 +20,8 @@ from .rendering import create_png
 def datasets(request):
     if request.method == 'GET':
         objects = DataSetModel.objects.all()
-        return render(request, 'datasets.html', context={'datasets': objects})
+        return render(request, 'datasets.html', context={
+            'datasets': objects, 'model_dir': settings.TENSORFLOW_MODEL_DIR})
     if request.method == 'POST':
         files = request.FILES.getlist('files')
         timestamp = timezone.now().strftime('%Y%m%d%H%M%S')
@@ -28,7 +29,8 @@ def datasets(request):
         for f in files:
             ImageModel.objects.create(file_obj=f, dataset=ds)
         objects = DataSetModel.objects.all()
-        return render(request, 'datasets.html', context={'datasets': objects})
+        return render(request, 'datasets.html', context={
+            'datasets': objects, 'model_dir': settings.TENSORFLOW_MODEL_DIR})
 
 
 @login_required
@@ -41,7 +43,8 @@ def dataset(request, dataset_id):
     if action == 'delete':
         ds.delete()
         dds = DataSetModel.objects.all()
-        return render(request, 'datasets.html', context={'datasets': dds})
+        return render(request, 'datasets.html', context={
+            'datasets': dds, 'model_dir': settings.TENSORFLOW_MODEL_DIR})
     q = django_rq.get_queue('default')
     if action == 'score':
         job = q.enqueue(score_images, images)
