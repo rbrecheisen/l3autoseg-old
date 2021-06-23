@@ -54,6 +54,8 @@ def dataset(request, dataset_id):
             img.job_status = 'queued'
             img.save()
     if ds.job_id:
+        # TODO: Move this code to scoring.py because refreshing the page causes the PNGs
+        # to be created. This is very time-consuming and blocks the page.
         job = q.fetch_job(ds.job_id)
         if job:
             # Per-image job status may have been updated in RQ (separate thread) so we need to
