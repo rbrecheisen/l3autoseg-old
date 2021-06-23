@@ -13,7 +13,7 @@
                 {% if user.is_authenticated %}
                 <li class="nav-item" style="color: gray;">Welcome, {{ user.username }}</li>
                 <li class="nav-item">
-                    <a class="nav-link" href="{% url 'login'%}">
+                    <a class="nav-link" href="{% url 'logout'%}">
                         <img src="{% static 'logout.ico' %}" width="32" height="32">
                     </a>
                 </li>
