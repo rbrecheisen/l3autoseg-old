@@ -4,6 +4,7 @@ import pandas as pd
 
 from os.path import basename
 from django.shortcuts import render
+from django.conf import settings
 from django.utils import timezone
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse
@@ -60,7 +61,8 @@ def dataset(request, dataset_id):
                     if img.png_file_name is None:
                         img.png_file_name, img.png_file_path = create_png(img)
                         img.save()
-    return render(request, 'dataset.html', context={'dataset': ds, 'images': images, 'time_req': time_req})
+    return render(request, 'dataset.html', context={
+        'dataset': ds, 'images': images, 'time_req': time_req, 'model_dir': settings.TENSORFLOW_MODEL_DIR})
 
 
 def add_to_zip(file_path, zip_obj):
