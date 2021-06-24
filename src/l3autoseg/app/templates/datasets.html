@@ -8,6 +8,14 @@
                 <div class="card-body">
                     Model: {{ model_dir }}<br>
                     <br>
+                    {% if errors|length > 0 %}
+                        <p style="font-weight: bold; color: red">
+                            {% for error in errors %}
+                                {{ error }}
+                            {% endfor %}
+                        </p>
+                        <br>
+                    {% endif %}
                     <p class="card-text">
                         This app allows you to segment muscle and fat tissue in CT images acquired at the
                         L3 vertebral level. You can upload multiple DICOM images at once. These will form

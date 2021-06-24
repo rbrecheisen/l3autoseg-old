@@ -1,6 +1,7 @@
 import json
 import django_rq
 import pandas as pd
+import pydicom
 
 from os.path import basename
 from django.shortcuts import render
@@ -10,9 +11,15 @@ from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse
 from django.core.files import File
 from barbell2light.utils import duration
+from barbell2light.dicom import is_dicom_file
 from zipfile import ZipFile
 from .models import DataSetModel, ImageModel
 from .scoring import score_images
+
+
+def check_file_requirements(f):
+    p = pydicom.read_file(f, stop_before_pixels=True)
+    return ['pixel_spacing: {}'.format(p.PixelSpacing)]
 
 
 @login_required
@@ -23,13 +30,26 @@ def datasets(request):
             'datasets': objects, 'model_dir': settings.TENSORFLOW_MODEL_DIR})
     if request.method == 'POST':
         files = request.FILES.getlist('files')
-        timestamp = timezone.now().strftime('%Y%m%d%H%M%S')
-        ds = DataSetModel.objects.create(name='dataset-{}'.format(timestamp), owner=request.user)
+        # Perform some basic checks. If there is a non-DICOM file in this list, abort the whole
+        # upload. People should take care to not upload shit.
+        errors = []
         for f in files:
-            ImageModel.objects.create(file_obj=f, dataset=ds)
+            if not is_dicom_file(f):
+                errors.append('File {} is not a DICOM file'.format(f.path))
+        if len(errors) == 0:
+            timestamp = timezone.now().strftime('%Y%m%d%H%M%S')
+            ds = DataSetModel.objects.create(name='dataset-{}'.format(timestamp), owner=request.user)
+            for f in files:
+                # Check that file complies with requirements. If not, check returns list of errors
+                # that we can append to total list
+                file_errors = check_file_requirements(f)
+                if len(file_errors) == 0:
+                    ImageModel.objects.create(file_obj=f, dataset=ds)
+                else:
+                    errors.extend(file_errors)
         objects = DataSetModel.objects.all()
         return render(request, 'datasets.html', context={
-            'datasets': objects, 'model_dir': settings.TENSORFLOW_MODEL_DIR})
+            'datasets': objects, 'model_dir': settings.TENSORFLOW_MODEL_DIR, 'errors': errors})
 
 
 @login_required
