@@ -2,6 +2,7 @@ import json
 import django_rq
 import pandas as pd
 import pydicom
+import pydicom.errors
 
 from os.path import basename
 from django.shortcuts import render
@@ -17,12 +18,6 @@ from .models import DataSetModel, ImageModel
 from .scoring import score_images
 
 
-def check_file_requirements(f):
-    print('Checking pixel spacing {}'.format(f))
-    p = pydicom.read_file(f.read())
-    return ['pixel_spacing: {}'.format(p.PixelSpacing)]
-
-
 @login_required
 def datasets(request):
     if request.method == 'GET':
@@ -36,6 +31,13 @@ def datasets(request):
         errors = []
         for f in files:
             print('Checking DICOM type {}'.format(f))
+            try:
+                p = pydicom.dcmread(f)
+                print(p.PixelSpacing)
+            except pydicom.errors.InvalidDicomError:
+                err = 'File {} is not a DICOM file'.format(f.path)
+                errors.append(err)
+                print(err)
             if not is_dicom_file(f):
                 err = 'File {} is not a DICOM file'.format(f.path)
                 errors.append(err)
@@ -44,13 +46,7 @@ def datasets(request):
             timestamp = timezone.now().strftime('%Y%m%d%H%M%S')
             ds = DataSetModel.objects.create(name='dataset-{}'.format(timestamp), owner=request.user)
             for f in files:
-                # Check that file complies with requirements. If not, check returns list of errors
-                # that we can append to total list
-                file_errors = check_file_requirements(f)
-                if len(file_errors) == 0:
-                    ImageModel.objects.create(file_obj=f, dataset=ds)
-                else:
-                    errors.extend(file_errors)
+                ImageModel.objects.create(file_obj=f, dataset=ds)
         objects = DataSetModel.objects.all()
         return render(request, 'datasets.html', context={
             'datasets': objects, 'model_dir': settings.TENSORFLOW_MODEL_DIR, 'errors': errors})
