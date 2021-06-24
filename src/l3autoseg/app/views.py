@@ -32,8 +32,7 @@ def datasets(request):
         for f in files:
             print('Checking DICOM type {}'.format(f))
             try:
-                p = pydicom.dcmread(f)
-                print(p.PixelSpacing)
+                pydicom.dcmread(f, stop_before_pixels=True)
             except pydicom.errors.InvalidDicomError:
                 err = 'File {} is not a DICOM file'.format(f)
                 errors.append(err)
@@ -42,7 +41,13 @@ def datasets(request):
             timestamp = timezone.now().strftime('%Y%m%d%H%M%S')
             ds = DataSetModel.objects.create(name='dataset-{}'.format(timestamp), owner=request.user)
             for f in files:
-                ImageModel.objects.create(file_obj=f, dataset=ds)
+                p = pydicom.dcmread(f, stop_before_pixels=True)
+                if p.Rows != 512 or p.Columns != 512:
+                    err = 'File {} has wrong dimensions ({} x {})'.format(f, p.Rows, p.Columns)
+                    errors.append(err)
+                    print(err)
+                else:
+                    ImageModel.objects.create(file_obj=f, dataset=ds)
         objects = DataSetModel.objects.all()
         return render(request, 'datasets.html', context={
             'datasets': objects, 'model_dir': settings.TENSORFLOW_MODEL_DIR, 'errors': errors})
