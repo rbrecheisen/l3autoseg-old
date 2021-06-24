@@ -18,7 +18,7 @@ from .scoring import score_images
 
 
 def check_file_requirements(f):
-    p = pydicom.read_file(f, stop_before_pixels=True)
+    p = pydicom.dcmread(f)
     return ['pixel_spacing: {}'.format(p.PixelSpacing)]
 
 
