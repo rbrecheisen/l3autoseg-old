@@ -31,10 +31,7 @@ def datasets(request):
         errors = []
         for f in files:
             print('Checking DICOM type {}'.format(f))
-            try:
-                pydicom.dcmread(f, stop_before_pixels=True)
-                f.seek(0)
-            except pydicom.errors.InvalidDicomError:
+            if not is_dicom_file(f):
                 err = 'File {} is not a DICOM file'.format(f)
                 errors.append(err)
                 print(err)
@@ -43,7 +40,6 @@ def datasets(request):
             ds = DataSetModel.objects.create(name='dataset-{}'.format(timestamp), owner=request.user)
             for f in files:
                 p = pydicom.dcmread(f, stop_before_pixels=True)
-                f.seek(0)
                 if p.Rows != 512 or p.Columns != 512:
                     err = 'File {} has wrong dimensions ({} x {})'.format(f, p.Rows, p.Columns)
                     errors.append(err)
