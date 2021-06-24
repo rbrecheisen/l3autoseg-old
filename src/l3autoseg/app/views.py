@@ -18,7 +18,8 @@ from .scoring import score_images
 
 
 def check_file_requirements(f):
-    p = pydicom.read_file(f.path)
+    print('Checking pixel spacing {}'.format(f))
+    p = pydicom.read_file(f)
     return ['pixel_spacing: {}'.format(p.PixelSpacing)]
 
 
@@ -34,8 +35,11 @@ def datasets(request):
         # upload. People should take care to not upload shit.
         errors = []
         for f in files:
+            print('Checking DICOM type {}'.format(f))
             if not is_dicom_file(f):
-                errors.append('File {} is not a DICOM file'.format(f.path))
+                err = 'File {} is not a DICOM file'.format(f.path)
+                errors.append(err)
+                print(err)
         if len(errors) == 0:
             timestamp = timezone.now().strftime('%Y%m%d%H%M%S')
             ds = DataSetModel.objects.create(name='dataset-{}'.format(timestamp), owner=request.user)
