@@ -39,6 +39,7 @@ def datasets(request):
             timestamp = timezone.now().strftime('%Y%m%d%H%M%S')
             ds = DataSetModel.objects.create(name='dataset-{}'.format(timestamp), owner=request.user)
             for f in files:
+                f.seek(0)
                 p = pydicom.dcmread(f, stop_before_pixels=True)
                 if p.Rows != 512 or p.Columns != 512:
                     err = 'File {} has wrong dimensions ({} x {})'.format(f, p.Rows, p.Columns)
