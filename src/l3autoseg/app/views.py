@@ -12,7 +12,7 @@ from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse
 from django.core.files import File
 from barbell2light.utils import duration
-from barbell2light.dicom import is_dicom_file
+from barbell2light.dicom import is_dicom_file, is_compressed
 from zipfile import ZipFile
 from .models import DataSetModel, ImageModel
 from .scoring import score_images
@@ -49,6 +49,10 @@ def datasets(request):
                     err = 'File {} has no pixel spacing tag'.format(f)
                     errors.append(err)
                     print(err)
+                if is_compressed(p):
+                    err = 'File {} has compressed pixels'.format(f)
+                    errors.append(err)
+                    print(err)
         if len(errors) == 0:
             timestamp = timezone.now().strftime('%Y%m%d%H%M%S')
             ds = DataSetModel.objects.create(name='dataset-{}'.format(timestamp), owner=request.user)
@@ -79,19 +83,6 @@ def dataset(request, dataset_id):
         for img in images:
             img.job_status = 'queued'
             img.save()
-    # if ds.job_id:
-    #     # TODO: Move this code to scoring.py because refreshing the page causes the PNGs
-    #     # to be created. This is very time-consuming and blocks the page.
-    #     job = q.fetch_job(ds.job_id)
-    #     if job:
-    #         # Per-image job status may have been updated in RQ (separate thread) so we need to
-    #         # re-retrieve the images to get these updates
-    #         images = ImageModel.objects.filter(dataset=ds).all()
-    #         if job.get_status() == 'finished':
-    #             for img in images:
-    #                 if img.png_file_name is None:
-    #                     img.png_file_name, img.png_file_path = create_png(img)
-    #                     img.save()
     return render(request, 'dataset.html', context={
         'dataset': ds, 'images': images, 'time_req': time_req, 'model_dir': settings.TENSORFLOW_MODEL_DIR})
 
