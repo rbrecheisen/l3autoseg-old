@@ -45,7 +45,7 @@ def datasets(request):
                     err = 'File {} has wrong dimensions ({} x {})'.format(f, p.Rows, p.Columns)
                     errors.append(err)
                     print(err)
-                if 'PixelSpacing' not in p.keys():
+                if 'PixelSpacing' not in p:
                     err = 'File {} has no pixel spacing tag'.format(f)
                     errors.append(err)
                     print(err)
