@@ -37,7 +37,7 @@ def dataset(request, dataset_id):
     ds = DataSetModel.objects.get(pk=dataset_id)
     images = ImageModel.objects.filter(dataset=ds).all()
     # Time required: 11s for GPU initialization, 0.5s per image
-    time_req = duration(int(11 + 0.5 * len(images)) + 1)
+    time_req = duration(int(11 + len(images)))
     action = request.GET.get('action', None)
     if action == 'delete':
         ds.delete()
