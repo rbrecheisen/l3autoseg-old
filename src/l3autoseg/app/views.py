@@ -35,11 +35,7 @@ def datasets(request):
                 p = pydicom.dcmread(f)
                 print(p.PixelSpacing)
             except pydicom.errors.InvalidDicomError:
-                err = 'File {} is not a DICOM file'.format(f.path)
-                errors.append(err)
-                print(err)
-            if not is_dicom_file(f):
-                err = 'File {} is not a DICOM file'.format(f.path)
+                err = 'File {} is not a DICOM file'.format(f)
                 errors.append(err)
                 print(err)
         if len(errors) == 0:
