@@ -57,6 +57,7 @@ def datasets(request):
                 p = pydicom.dcmread(img.file_obj.path)
                 if is_compressed(p):
                     img.file_obj.path = decompress(img.file_obj.path)
+                    print('Uncompressed file {}'.format(img.file_obj.path))
                     img.save()
         objects = DataSetModel.objects.all()
         return render(request, 'datasets.html', context={
