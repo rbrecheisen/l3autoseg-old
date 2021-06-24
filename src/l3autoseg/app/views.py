@@ -41,11 +41,11 @@ def datasets(request):
                 # so we need to reset it to zero
                 f.seek(0)
                 p = pydicom.dcmread(f, stop_before_pixels=True)
-                if p.Rows != 511 or p.Columns != 512:
+                if p.Rows != 512 or p.Columns != 512:
                     err = 'File {} has wrong dimensions ({} x {})'.format(f, p.Rows, p.Columns)
                     errors.append(err)
                     print(err)
-                if not p.get('PixelSpacing', True):
+                if 'PixelSpacing' not in p.keys():
                     err = 'File {} has no pixel spacing tag'.format(f)
                     errors.append(err)
                     print(err)
