@@ -55,10 +55,14 @@ def datasets(request):
             for f in files:
                 img = ImageModel.objects.create(file_obj=f, dataset=ds)
                 p = pydicom.dcmread(img.file_obj.path)
+                print('Checking compression...')
                 if is_compressed(p):
+                    print('Decompressing {}...'.format(f))
                     img.file_obj.path = decompress(img.file_obj.path)
                     print('Uncompressed file {}'.format(img.file_obj.path))
                     img.save()
+                else:
+                    print('File not compressed')
         objects = DataSetModel.objects.all()
         return render(request, 'datasets.html', context={
             'datasets': objects, 'model_dir': settings.TENSORFLOW_MODEL_DIR, 'errors': errors})
