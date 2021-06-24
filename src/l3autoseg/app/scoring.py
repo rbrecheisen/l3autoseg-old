@@ -3,6 +3,7 @@ import json
 import pydicom
 import numpy as np
 import django_rq
+import matplotlib.pyplot as plt
 
 from barbell2light.dicom import get_pixels
 from django.conf import settings
@@ -70,6 +71,31 @@ class ScoreCalculation:
         area = np.sum(mask) * (pixel_spacing[0] * pixel_spacing[1]) / 100.0
         return area
 
+    @staticmethod
+    def create_png(image):
+        image_file_path = image.file_obj.path
+        image_file_dir = os.path.split(image_file_path)[0]
+        image_id = os.path.splitext(os.path.split(image_file_path)[1])[0]
+        prediction_file_name = '{}_pred.npy'.format(image_id)
+        prediction_file_path = os.path.join(image_file_dir, prediction_file_name)
+        if not os.path.isfile(prediction_file_path):
+            return None
+        prediction = np.load(prediction_file_path)
+        image = pydicom.read_file(image_file_path)
+        image = get_pixels(image, normalize=True)
+        fig = plt.figure(figsize=(10, 10))
+        ax = fig.add_subplot(1, 2, 1)
+        plt.imshow(image, cmap='gray')
+        ax.axis('off')
+        ax = fig.add_subplot(1, 2, 2)
+        plt.imshow(prediction, cmap='viridis')
+        ax.axis('off')
+        png_file_name = '{}.png'.format(image_id)
+        png_file_path = os.path.join(image_file_dir, png_file_name)
+        plt.savefig(png_file_path, bbox_inches='tight')
+        plt.close('all')
+        return png_file_name, png_file_path
+
     def execute(self):
 
         # Run segmentation
@@ -91,6 +117,9 @@ class ScoreCalculation:
         self.image.job_status = 'finished'
         self.image.pred_file_name = pred_file_name
         self.image.pred_file_path = pred_file_path
+
+        # Create PNG
+        self.image.png_file_name, self.image.png_file_path = self.create_png(self.image)
 
         # Calculate SMRA
         img = get_pixels(p, normalize=True)
@@ -116,6 +145,7 @@ class ScoreCalculation:
                 'vat_area': vat_area,
                 'sat_area': sat_area
             }, f, indent=4)
+
         self.image.json_file_name = json_file_name
         self.image.json_file_path = json_file_path
         self.image.save()
