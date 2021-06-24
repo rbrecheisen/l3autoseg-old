@@ -36,8 +36,6 @@ def datasets(request):
                 errors.append(err)
                 print(err)
         if len(errors) == 0:
-            timestamp = timezone.now().strftime('%Y%m%d%H%M%S')
-            ds = DataSetModel.objects.create(name='dataset-{}'.format(timestamp), owner=request.user)
             for f in files:
                 # For some reason, the file pointer hangs on some non-zero position
                 # so we need to reset it to zero
@@ -47,8 +45,15 @@ def datasets(request):
                     err = 'File {} has wrong dimensions ({} x {})'.format(f, p.Rows, p.Columns)
                     errors.append(err)
                     print(err)
-                else:
-                    ImageModel.objects.create(file_obj=f, dataset=ds)
+                if not p.get('PixelSpacing', True):
+                    err = 'File {} has no pixel spacing tag'.format(f)
+                    errors.append(err)
+                    print(err)
+        if len(errors) == 0:
+            timestamp = timezone.now().strftime('%Y%m%d%H%M%S')
+            ds = DataSetModel.objects.create(name='dataset-{}'.format(timestamp), owner=request.user)
+            for f in files:
+                ImageModel.objects.create(file_obj=f, dataset=ds)
         objects = DataSetModel.objects.all()
         return render(request, 'datasets.html', context={
             'datasets': objects, 'model_dir': settings.TENSORFLOW_MODEL_DIR, 'errors': errors})
