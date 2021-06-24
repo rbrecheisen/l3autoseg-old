@@ -12,7 +12,7 @@ from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse
 from django.core.files import File
 from barbell2light.utils import duration
-from barbell2light.dicom import is_dicom_file, is_compressed
+from barbell2light.dicom import is_dicom_file, is_compressed, decompress
 from zipfile import ZipFile
 from .models import DataSetModel, ImageModel
 from .scoring import score_images
@@ -49,15 +49,15 @@ def datasets(request):
                     err = 'File {} has no pixel spacing tag'.format(f)
                     errors.append(err)
                     print(err)
-                if is_compressed(p):
-                    err = 'File {} has compressed pixels'.format(f)
-                    errors.append(err)
-                    print(err)
         if len(errors) == 0:
             timestamp = timezone.now().strftime('%Y%m%d%H%M%S')
             ds = DataSetModel.objects.create(name='dataset-{}'.format(timestamp), owner=request.user)
             for f in files:
-                ImageModel.objects.create(file_obj=f, dataset=ds)
+                img = ImageModel.objects.create(file_obj=f, dataset=ds)
+                p = pydicom.dcmread(img.file_obj.path)
+                if is_compressed(p):
+                    img.file_obj.path = decompress(img.file_obj.path)
+                    img.save()
         objects = DataSetModel.objects.all()
         return render(request, 'datasets.html', context={
             'datasets': objects, 'model_dir': settings.TENSORFLOW_MODEL_DIR, 'errors': errors})
