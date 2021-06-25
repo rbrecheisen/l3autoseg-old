@@ -15,5 +15,6 @@ def datasets(request):
         return Response({'dataset_ids': dataset_ids}, status=200)
     if request.method == 'POST':
         files = request.FILES.get('files')
+        print(files)
         return Response({'dataset_id': create_dataset(files)}, status=201)
     return Response({}, status=404)

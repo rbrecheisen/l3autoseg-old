@@ -10,7 +10,6 @@ def get_datasets():
 def create_dataset(files):
     errors = []
     for f in files:
-        print(f)
         # if not is_dicom_file(f):
         #     err = 'File {} is not a DICOM file'.format(f)
         #     errors.append(err)
