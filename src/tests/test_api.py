@@ -16,7 +16,9 @@ def test_user_can_create_dataset_by_uploading_images():
     files = []
     for f in os.listdir(IMG_DIR):
         f_path = os.path.join(IMG_DIR, f)
-        files.append((f, open(f_path, 'rb')))
+        # files.append((f, open(f_path, 'rb')))
+        files.append(('files', (f, open(f_path, 'rb'), 'image/png')))
+    print(files)
     result, status_code = post_files('api/datasets/', token, files=files, raw_result=False)
     assert status_code == 201
     assert 'dataset_id' in result.keys()
