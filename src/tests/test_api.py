@@ -17,5 +17,5 @@ def test_user_can_create_dataset_by_uploading_images():
     for f in os.listdir(IMG_DIR):
         f_path = os.path.join(IMG_DIR, f)
         files.append((f, open(f_path, 'rb')))
-    dataset_id = post_files('/datasets/', token, files={'files': files})
+    dataset_id = post_files('/datasets/', token, files=files)
     assert dataset_id is not None
