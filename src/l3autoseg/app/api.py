@@ -6,4 +6,4 @@ from rest_framework.permissions import IsAuthenticated
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def datasets(requests):
-    return Response({}, status=201)
+    return Response({'dataset_id': 0}, status=201)
