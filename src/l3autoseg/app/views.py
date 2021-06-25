@@ -30,7 +30,6 @@ def datasets(request):
         # upload. People should take care to not upload shit.
         errors = []
         for f in files:
-            print('Checking DICOM type {}'.format(f))
             if not is_dicom_file(f):
                 err = 'File {} is not a DICOM file'.format(f)
                 errors.append(err)
@@ -63,7 +62,7 @@ def datasets(request):
 def dataset(request, dataset_id):
     ds = DataSetModel.objects.get(pk=dataset_id)
     images = ImageModel.objects.filter(dataset=ds).all()
-    # Time required: 11s for GPU initialization, 0.5s per image
+    # Time required: 11s for GPU initialization, about 1 sec per image
     time_req = duration(int(11 + len(images)))
     action = request.GET.get('action', None)
     if action == 'delete':
