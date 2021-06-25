@@ -19,4 +19,4 @@ def test_user_can_create_dataset_by_uploading_images():
         files.append((f, open(f_path, 'rb')))
     result, status_code = post_files('api/datasets/', token, files=files, raw_result=False)
     assert status_code == 201
-    print(result)
+    print(result.keys())

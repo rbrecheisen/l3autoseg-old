@@ -1,6 +1,5 @@
 import os
 import requests
-from types import SimpleNamespace
 
 
 HOST = os.environ.get('L3AUTOSEG_HOST', 'http://localhost')
@@ -26,14 +25,14 @@ def get(endpoint, token, raw_result=False):
     if raw_result:
         return result, result.status_code
     else:
-        return SimpleNamespace(**result.json()), result.status_code
+        return result.json(), result.status_code
 
 
 def get_binary(endpoint, token):
     result = requests.get(
         '{}:{}/{}'.format(HOST, PORT, endpoint), headers={'Authorization': 'Token {}'.format(token)})
     if result.status_code != 200:
-        return SimpleNamespace(**result.json()), result.status_code
+        return result.json(), result.status_code
     else:
         return result.content, result.status_code
 
@@ -50,7 +49,7 @@ def post_json(endpoint, token, json, raw_result=False):
     if raw_result:
         return result, result.status_code
     else:
-        return SimpleNamespace(**result.json()), result.status_code
+        return result.json(), result.status_code
 
 
 def post_files(endpoint, token, files, raw_result=False):
@@ -59,7 +58,7 @@ def post_files(endpoint, token, files, raw_result=False):
     if raw_result:
         return result, result.status_code
     else:
-        return SimpleNamespace(**result.json()), result.status_code
+        return result.json(), result.status_code
 
 
 def delete(endpoint, token):
