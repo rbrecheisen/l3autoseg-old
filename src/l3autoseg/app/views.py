@@ -12,8 +12,9 @@ from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse
 from django.core.files import File
 from barbell2light.utils import duration
-from barbell2light.dicom import is_dicom_file, is_compressed, decompress
+from barbell2light.dicom import is_dicom_file
 from zipfile import ZipFile
+from .backend import get_model_dir, get_datasets
 from .models import DataSetModel, ImageModel
 from .scoring import score_images
 
@@ -21,9 +22,8 @@ from .scoring import score_images
 @login_required
 def datasets(request):
     if request.method == 'GET':
-        objects = DataSetModel.objects.all()
         return render(request, 'datasets.html', context={
-            'datasets': objects, 'model_dir': settings.TENSORFLOW_MODEL_DIR})
+            'datasets': get_datasets(), 'model_dir': get_model_dir()})
     if request.method == 'POST':
         files = request.FILES.getlist('files')
         # Perform some basic checks. If there is a non-DICOM file in this list, abort the whole

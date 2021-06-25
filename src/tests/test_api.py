@@ -1,5 +1,5 @@
 import os
-from .utils import get_token, post_files
+from .utils import get_token, get, post_files
 
 
 HOME = os.environ['HOME']
@@ -20,3 +20,8 @@ def test_user_can_create_dataset_by_uploading_images():
     result, status_code = post_files('api/datasets/', token, files=files, raw_result=False)
     assert status_code == 201
     assert 'dataset_id' in result.keys()
+    dataset_id = result['dataset_id']
+    # Check that dataset IDs present in list of datasets
+    result, status_code = get('api/datasets/', token)
+    assert status_code == 200
+    assert dataset_id in result['dataset_ids']
