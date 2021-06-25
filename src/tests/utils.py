@@ -22,7 +22,7 @@ def get_token(username=None, password=None):
 
 def get(endpoint, token, raw_result=False):
     result = requests.get(
-        '{}:{}{}'.format(HOST, PORT, endpoint), headers={'Authorization': 'Token {}'.format(token)})
+        '{}:{}/{}'.format(HOST, PORT, endpoint), headers={'Authorization': 'Token {}'.format(token)})
     if raw_result:
         return result, result.status_code
     else:
@@ -31,7 +31,7 @@ def get(endpoint, token, raw_result=False):
 
 def get_binary(endpoint, token):
     result = requests.get(
-        '{}:{}{}'.format(HOST, PORT, endpoint), headers={'Authorization': 'Token {}'.format(token)})
+        '{}:{}/{}'.format(HOST, PORT, endpoint), headers={'Authorization': 'Token {}'.format(token)})
     if result.status_code != 200:
         return SimpleNamespace(**result.json()), result.status_code
     else:
@@ -40,7 +40,7 @@ def get_binary(endpoint, token):
 
 def post_json(endpoint, token, json, raw_result=False):
     result = requests.post(
-        '{}:{}{}'.format(HOST, PORT, endpoint), json=json,
+        '{}:{}/{}'.format(HOST, PORT, endpoint), json=json,
         headers={
             'Authorization': 'Token {}'.format(token),
             'Content-Type': 'application/json',
@@ -55,7 +55,7 @@ def post_json(endpoint, token, json, raw_result=False):
 
 def post_files(endpoint, token, files, raw_result=False):
     result = requests.post(
-        '{}:{}{}'.format(HOST, PORT, endpoint), files=files, headers={'Authorization': 'Token {}'.format(token)})
+        '{}:{}/{}'.format(HOST, PORT, endpoint), files=files, headers={'Authorization': 'Token {}'.format(token)})
     if raw_result:
         return result, result.status_code
     else:
@@ -64,5 +64,5 @@ def post_files(endpoint, token, files, raw_result=False):
 
 def delete(endpoint, token):
     result = requests.delete(
-        '{}:{}{}'.format(HOST, PORT, endpoint), headers={'Authorization': 'Token {}'.format(token)})
+        '{}:{}/{}'.format(HOST, PORT, endpoint), headers={'Authorization': 'Token {}'.format(token)})
     return result, result.status_code
