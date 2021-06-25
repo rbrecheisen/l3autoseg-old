@@ -1,7 +1,7 @@
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
-from .backend import get_datasets
+from .backend import get_datasets, create_dataset
 
 
 @api_view(['GET', 'POST'])
@@ -14,8 +14,6 @@ def datasets(request):
             dataset_ids.append(obj.id)
         return Response({'dataset_ids': dataset_ids}, status=200)
     if request.method == 'POST':
-        file_objs = request.FILES.get('files')
-        for file_obj in file_objs:
-            print(file_obj)
-        return Response({'dataset_id': 0}, status=201)
+        files = request.FILES.get('files')
+        return Response({'dataset_id': create_dataset(files)}, status=201)
     return Response({}, status=404)
