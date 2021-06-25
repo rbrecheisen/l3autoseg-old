@@ -16,6 +16,7 @@ def create_dataset(files):
         #     print(err)
         # else:
         #     print('File is DICOM')
+        pass
     return 0
 
 
