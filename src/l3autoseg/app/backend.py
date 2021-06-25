@@ -10,13 +10,13 @@ def get_datasets():
 def create_dataset(files):
     errors = []
     for f in files:
-        # if not is_dicom_file(f):
-        #     err = 'File {} is not a DICOM file'.format(f)
-        #     errors.append(err)
-        #     print(err)
-        # else:
-        #     print('File is DICOM')
-        pass
+        # TODO: This doesn't work because f is a list of bytes, not a file object
+        if not is_dicom_file(f):
+            err = 'File {} is not a DICOM file'.format(f)
+            errors.append(err)
+            print(err)
+        else:
+            print('File is DICOM')
     return 0
 
 
