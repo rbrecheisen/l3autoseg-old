@@ -1,14 +1,50 @@
-TODO
+TODO:
+=====
 
-MUST DO:
+- Implement REST interface
+- Put downloads behind login (also needed for REST)
 
-- implement REST interface
-  o refactor to remove code duplication
-  o move segmentation code out of view to separate class
-- put downloads behind login (also needed for REST)
+DETAILS:
+========
 
-NICE TO HAVE:
+My views.py now contains end-points that only serve HTML pages. How can I also provide a RESTful interface?
+To be able to use the core service that this web application offers, users must be able to call the following
+REST API end-points:
 
-- downloads zip with numpy arrays
-- select model version
-- show progress at dataset level
+END-POINTS:
+===========
+
+------------------------------------------------------------------------------------------------------------------------
+/accounts/token-requests/
+    - GET:  Takes username and password and returns an access token that can be used for any further interaction
+            with the REST API.
+
+------------------------------------------------------------------------------------------------------------------------
+/datasets/
+    - POST: Creates a new dataset by uploading a set of images. The end-point returns the dataset name or an error,
+            if some of the images are not ok (like non-DICOM, or the wrong dimension). The error JSON will show
+            the problems encountered.
+    - GET:  Returns list of datasets (and their URIs) for which current user is owner.
+
+------------------------------------------------------------------------------------------------------------------------
+/datasets/<str:dataset_id>
+    - GET:      Returns dataset info, including list of images contained by it. If the images have been processed
+                and results (PNG thumbnails and NPY array objects) are available, the URIs to these PNGs and NPY
+                objects will be included in the JSON.
+    - DELETE:   Delete dataset (including all images, calculations and calculation results).
+
+------------------------------------------------------------------------------------------------------------------------
+/datasets/<str:dataset_id>/calculations/
+    - POST: Creates a new scoring for this dataset. Returns the (job) ID for the new scoring. Using that ID you
+            can ask for status updates.
+
+------------------------------------------------------------------------------------------------------------------------
+/datasets/<str:dataset_id>/calculations/<str:calculation_id>
+    - GET:  Return status information about calculation. When status is 'ready', the JSON object will contain a
+            entry 'results' that points to the URI for downloading the results as a ZIP file. If status is not
+            'ready', the results entry will be empty.
+
+------------------------------------------------------------------------------------------------------------------------
+/datasets/<str:dataset_id>/calculations/<str:calculation_id>/results[?format=zip|tar.gz]
+    - GET:  Download the calculation results as a ZIP or TAR.GZ file. For now, we only support ZIP but the code
+            should be ready for extension to tar.gz format.
