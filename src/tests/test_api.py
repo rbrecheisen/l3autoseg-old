@@ -1,4 +1,4 @@
-from utils import get_token
+from .utils import get_token
 
 
 def test_user_can_get_token():

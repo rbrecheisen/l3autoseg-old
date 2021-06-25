@@ -10,5 +10,6 @@ barbell2light
 pandas
 matplotlib
 python-gdcm
+requests
 #psycopg2-binary
 #uwsgi
