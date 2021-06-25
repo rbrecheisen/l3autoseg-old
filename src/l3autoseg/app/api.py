@@ -14,8 +14,7 @@ def datasets(request):
             dataset_ids.append(obj.id)
         return Response({'dataset_ids': dataset_ids}, status=200)
     if request.method == 'POST':
-        # Try to get the file objects
-        file_objs = request.FILES.get('files', None)
+        file_objs = request.FILES
         print(file_objs)
         return Response({'dataset_id': 0}, status=201)
     return Response({}, status=404)
