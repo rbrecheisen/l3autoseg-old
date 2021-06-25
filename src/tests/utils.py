@@ -16,7 +16,7 @@ def get_token(username=None, password=None):
         password = PASS
     result = requests.post(
         '{}:{}/token-requests/'.format(HOST, PORT), data={'username': username, 'password': password})
-    assert result.status_code == 200
+    assert result.status_code == 200, 'ERROR: {} ({})'.format(result.status_code, result.reason)
     return result.json()['token']
 
 
