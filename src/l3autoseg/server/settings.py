@@ -3,6 +3,7 @@ from pathlib import Path
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+# TODO: point to /data in Docker container
 ROOT_DIR = '{}/data/l3autoseg'.format(os.environ['HOME'])
 
 SECRET_KEY = os.environ.get('SECRET_KEY', '1234')
@@ -11,6 +12,7 @@ DEBUG = True if os.environ.get('DEBUG', 1) == 1 else False
 
 SQLITE3_DIR = os.environ.get('SQLITE3_DIR', ROOT_DIR)
 
+# TODO: find solution for this
 # This directory should already exist and contain TensorFlow model files
 TENSORFLOW_MODEL_DIR = '/mnt/localscratch/maastro/Leroy/bodycomposition/logs/gradient_tape/stability_new_params_contour/20210529-084544/saved_models/model_26200'
 TENSORFLOW_PARAMS_FILE = '/mnt/localscratch/maastro/Leroy/bodycomposition/logs/gradient_tape/stability_new_params_contour/20210529-084544/params.json'
@@ -66,9 +68,17 @@ TEMPLATES = [
 WSGI_APPLICATION = 'server.wsgi.application'
 
 DATABASES = {
+    # 'default': {
+    #     'ENGINE': 'django.db.backends.sqlite3',
+    #     'NAME': os.path.join(SQLITE3_DIR, 'db.sqlite3'),
+    # }
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(SQLITE3_DIR, 'db.sqlite3'),
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME': 'postgres',
+        'USER': 'postgres',
+        'PASSWORD': 'postgres',
+        'HOST': 'db',
+        'PORT': 5432,
     }
 }
 
@@ -94,8 +104,8 @@ REST_FRAMEWORK = {
 
 RQ_QUEUES = {
     'default': {
-        'HOST': 'localhost',
-        'PORT': 6378,
+        'HOST': 'redis',
+        'PORT': 6379,
         'DB': 0,
         'DEFAULT_TIMEOUT': 360,
     }

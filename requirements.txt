@@ -2,7 +2,7 @@ django
 djangorestframework
 django-rq
 redis
-numpy==1.19.2
+numpy
 pydicom
 tensorflow
 wheel
@@ -13,4 +13,5 @@ python-gdcm
 pytest
 requests
 #psycopg2-binary
+#gunicorn
 #uwsgi
