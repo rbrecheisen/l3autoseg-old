@@ -4,7 +4,8 @@ from pathlib import Path
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 # TODO: point to /data in Docker container
-ROOT_DIR = '{}/data/l3autoseg'.format(os.environ['HOME'])
+# ROOT_DIR = '{}/data/l3autoseg'.format(os.environ['HOME'])
+ROOT_DIR = '/data'
 
 SECRET_KEY = os.environ.get('SECRET_KEY', '1234')
 
@@ -12,10 +13,10 @@ DEBUG = True if os.environ.get('DEBUG', 1) == 1 else False
 
 SQLITE3_DIR = os.environ.get('SQLITE3_DIR', ROOT_DIR)
 
-# TODO: find solution for this
-# This directory should already exist and contain TensorFlow model files
-TENSORFLOW_MODEL_DIR = '/mnt/localscratch/maastro/Leroy/bodycomposition/logs/gradient_tape/stability_new_params_contour/20210529-084544/saved_models/model_26200'
-TENSORFLOW_PARAMS_FILE = '/mnt/localscratch/maastro/Leroy/bodycomposition/logs/gradient_tape/stability_new_params_contour/20210529-084544/params.json'
+# TENSORFLOW_MODEL_DIR = '/mnt/localscratch/maastro/Leroy/bodycomposition/logs/gradient_tape/stability_new_params_contour/20210529-084544/saved_models/model_26200'
+TENSORFLOW_MODEL_DIR = os.environ.get('TENSORFLOW_MODEL_DIR', None)
+# TENSORFLOW_PARAMS_FILE = '/mnt/localscratch/maastro/Leroy/bodycomposition/logs/gradient_tape/stability_new_params_contour/20210529-084544/params.json'
+TENSORFLOW_PARAMS_FILE = os.environ.get('TENSORFLOW_PARAMS_FILE', None)
 
 ALLOWED_HOSTS = [
     '137.120.191.233',
@@ -127,7 +128,8 @@ LOGIN_REDIRECT_URL = '/'
 LOGOUT_REDIRECT_URL = '/'
 
 STATIC_URL = '/static/'
-STATIC_ROOT = os.path.join(ROOT_DIR, 'static')
+# STATIC_ROOT = os.path.join(ROOT_DIR, 'static')
+STATIC_ROOT = '/static'
 os.makedirs(STATIC_ROOT, exist_ok=True)
 
 MEDIA_URL = '/files/'
