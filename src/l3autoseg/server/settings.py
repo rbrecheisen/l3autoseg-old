@@ -14,9 +14,11 @@ DEBUG = True if os.environ.get('DEBUG', 1) == 1 else False
 SQLITE3_DIR = os.environ.get('SQLITE3_DIR', ROOT_DIR)
 
 # TENSORFLOW_MODEL_DIR = '/mnt/localscratch/maastro/Leroy/bodycomposition/logs/gradient_tape/stability_new_params_contour/20210529-084544/saved_models/model_26200'
-TENSORFLOW_MODEL_DIR = os.environ.get('TENSORFLOW_MODEL_DIR', None)
+# TENSORFLOW_MODEL_DIR = os.environ.get('TENSORFLOW_MODEL_DIR', None)
+TENSORFLOW_MODEL_DIR = os.path.join(ROOT_DIR, 'model')
 # TENSORFLOW_PARAMS_FILE = '/mnt/localscratch/maastro/Leroy/bodycomposition/logs/gradient_tape/stability_new_params_contour/20210529-084544/params.json'
-TENSORFLOW_PARAMS_FILE = os.environ.get('TENSORFLOW_PARAMS_FILE', None)
+# TENSORFLOW_PARAMS_FILE = os.environ.get('TENSORFLOW_PARAMS_FILE', None)
+TENSORFLOW_PARAMS_FILE = os.path.join(ROOT_DIR, 'params.json')
 
 ALLOWED_HOSTS = [
     '137.120.191.233',

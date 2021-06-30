@@ -8,5 +8,7 @@ RUN apt-get -y update && \
     pip install psycopg2-binary uwsgi gunicorn && \
     mkdir /static && \
     mkdir /src && \
-    mkdir /data
+    mkdir /data && \
+    mkdir /data/files && \
+    mkdir /data/model
 WORKDIR /src

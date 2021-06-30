@@ -20,6 +20,8 @@ services:
       - SECRET_KEY=1234
     volumes:
       - ./src/l3autoseg:/src
+      - /mnt/localscratch/maastro/Leroy/bodycomposition/logs/gradient_tape/stability_new_params_contour/20210529-084544/saved_models/model_26200:/data/model
+      - /mnt/localscratch/maastro/Leroy/bodycomposition/logs/gradient_tape/stability_new_params_contour/20210529-084544/params.json:/data/params.json
       - data:/data
     depends_on:
       - db
@@ -30,25 +32,21 @@ services:
     command: bash -c "redis-server"
     ports:
       - "6379:6379"
-#  rq:
+  rq:
 #    restart: always
-#    image: brecheisen/l3autoseg:latest
-#    container_name: l3autoseg_rq
-#    command: bash -c "python manage.py rqworker"
-#    environment:
-#      - SECRET_KEY=1234
-#      # /mnt/localscratch/maastro/Leroy/bodycomposition/logs/gradient_tape/stability_new_params_contour/20210529-084544/saved_models/model_26200
-#      - TENSORFLOW_MODEL_DIR
-#      # /mnt/localscratch/maastro/Leroy/bodycomposition/logs/gradient_tape/stability_new_params_contour/20210529-084544/params.json
-#      - TENSORFLOW_PARAMS_FILE
-#    volumes:
-#      - ${TENSORFLOW_MODEL_DIR}:/data/model
-#      - ${TENSORFLOW_PARAMS_FILE}:/data/model/params.json
-#      - ./src/l3autoseg:/src
-#      - data:/data
-#    depends_on:
-#      - db
-#      - redis
+    image: brecheisen/l3autoseg:latest
+    container_name: l3autoseg_rq
+    command: bash -c "python manage.py rqworker"
+    environment:
+      - SECRET_KEY=1234
+    volumes:
+      - /mnt/localscratch/maastro/Leroy/bodycomposition/logs/gradient_tape/stability_new_params_contour/20210529-084544/saved_models/model_26200:/data/model
+      - /mnt/localscratch/maastro/Leroy/bodycomposition/logs/gradient_tape/stability_new_params_contour/20210529-084544/params.json:/data/params.json
+      - ./src/l3autoseg:/src
+      - data:/data
+    depends_on:
+      - db
+      - redis
   db:
     restart: always
     image: postgres:10.5-alpine
