@@ -11,7 +11,7 @@ class TensorFlowModel(models.Model):
 class DataSetModel(models.Model):
     name = models.CharField(max_length=1024, editable=True, null=False)
     created_at = models.DateTimeField(auto_now_add=True)
-    job_id = models.CharField(max_length=32, null=True)
+    job_id = models.CharField(max_length=128, null=True)
     owner = models.ForeignKey(
         User, editable=False, related_name='+', on_delete=models.CASCADE)
     zip_file_path = models.CharField(max_length=1024, null=True)
