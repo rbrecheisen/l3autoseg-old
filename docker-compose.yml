@@ -33,7 +33,7 @@ services:
     ports:
       - "6379:6379"
   rq:
-#    restart: always
+    restart: always
     image: brecheisen/l3autoseg:latest
     container_name: l3autoseg_rq
     command: bash -c "python manage.py rqworker"
