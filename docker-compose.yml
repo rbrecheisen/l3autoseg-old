@@ -18,10 +18,12 @@ services:
     command: bash -c "python manage.py makemigrations && python manage.py migrate && gunicorn server.wsgi -b 0.0.0.0:8001"
     environment:
       - SECRET_KEY=1234
+      - TENSORFLOW_MODEL_DIR
+      - TENSORFLOW_PARAMS_FILE
     volumes:
       - ./src/l3autoseg:/src
-      - /mnt/localscratch/maastro/Leroy/bodycomposition/logs/gradient_tape/stability_new_params_contour/20210529-084544/saved_models/model_26200:/data/model
-      - /mnt/localscratch/maastro/Leroy/bodycomposition/logs/gradient_tape/stability_new_params_contour/20210529-084544/params.json:/data/params.json
+      - $TENSORFLOW_MODEL_DIR:/data/model
+      - $TENSORFLOW_PARAMS_FILE:/data/params.json
       - data:/data
     depends_on:
       - db
@@ -39,9 +41,11 @@ services:
     command: bash -c "python manage.py rqworker"
     environment:
       - SECRET_KEY=1234
+      - TENSORFLOW_MODEL_DIR
+      - TENSORFLOW_PARAMS_FILE
     volumes:
-      - /mnt/localscratch/maastro/Leroy/bodycomposition/logs/gradient_tape/stability_new_params_contour/20210529-084544/saved_models/model_26200:/data/model
-      - /mnt/localscratch/maastro/Leroy/bodycomposition/logs/gradient_tape/stability_new_params_contour/20210529-084544/params.json:/data/params.json
+      - $TENSORFLOW_MODEL_DIR:/data/model
+      - $TENSORFLOW_PARAMS_FILE:/data/params.json
       - ./src/l3autoseg:/src
       - data:/data
     depends_on:
